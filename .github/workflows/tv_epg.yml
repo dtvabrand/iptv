@@ -51,16 +51,8 @@ jobs:
             #!/usr/bin/env bash
             set -euo pipefail
             OUTDIR="${OUTDIR:-$RUNNER_TEMP}"; export OUTDIR
-
-            echo "::group::Install"
-            pushd epg >/dev/null
-            npm ci --no-audit --no-fund --silent
-            popd >/dev/null
-            echo "::endgroup::"
-
-            echo "::group::Prepare"
-            test -s "${GITHUB_WORKSPACE}/m_channels.xml"
-            test -s "${GITHUB_WORKSPACE}/d_channels.xml"
+            echo "::group::Install"; pushd epg >/dev/null; npm ci --no-audit --no-fund --silent; popd >/dev/null; echo "::endgroup::"
+            echo "::group::Prepare"; test -s "${GITHUB_WORKSPACE}/m_channels.xml"; test -s "${GITHUB_WORKSPACE}/d_channels.xml"
             python - << 'PY'
             import os, xml.etree.ElementTree as ET
             gw, outdir = os.environ["GITHUB_WORKSPACE"], os.environ["OUTDIR"]
@@ -74,13 +66,10 @@ jobs:
                     for ch in items: root.append(ch)
                     try: ET.indent(root, space="  ", level=0)
                     except: pass
-                    ET.ElementTree(root).write(os.path.join(outdir,f"{prefix}__{site}.channels.xml"),
-                                               encoding='utf-8', xml_declaration=True)
-            split_by_site(os.path.join(gw,'m_channels.xml'), '_main')
-            split_by_site(os.path.join(gw,'d_channels.xml'), '_d')
+                    ET.ElementTree(root).write(os.path.join(outdir,f"{prefix}__{site}.channels.xml"),encoding='utf-8', xml_declaration=True)
+            split_by_site(os.path.join(gw,'m_channels.xml'), '_main'); split_by_site(os.path.join(gw,'d_channels.xml'), '_d')
             PY
             echo "::endgroup::"
-
             cat > "${RUNNER_TEMP}/helpers.sh" <<'BASH'
             set -euo pipefail
             tune_params(){ local s="$1" maxc=6 tout=45000; case "$s" in
@@ -116,54 +105,34 @@ jobs:
               wait || true
             }
             BASH
-
-            echo "::group::Grab"
-            pushd epg >/dev/null
-            source "${RUNNER_TEMP}/helpers.sh"
-            mkdir -p "${OUTDIR}/out-main" "${OUTDIR}/out-d"
-            ( run_block "_main" "${OUTDIR}/out-main" ) & pid_main=$!
-            ( run_block "_d"    "${OUTDIR}/out-d"    ) & pid_d=$!
-            wait "$pid_main" || true; wait "$pid_d" || true
-            popd >/dev/null
-            echo "::endgroup::"
-
+            echo "::group::Grab"; pushd epg >/dev/null; source "${RUNNER_TEMP}/helpers.sh"; mkdir -p "${OUTDIR}/out-main" "${OUTDIR}/out-d"
+            ( run_block "_main" "${OUTDIR}/out-main" ) & pid_main=$!; ( run_block "_d" "${OUTDIR}/out-d" ) & pid_d=$!; wait "$pid_main" || true; wait "$pid_d" || true; popd >/dev/null; echo "::endgroup::"
             echo "::group::Merge"
             python - << 'PY'
             import os, glob, xml.etree.ElementTree as ET
             gw, temp = os.environ["GITHUB_WORKSPACE"], os.environ["OUTDIR"]
             def merge(mask, outp):
                 files=sorted(f for f in glob.glob(mask) if os.path.isfile(f) and os.path.getsize(f)>0)
-                if not files:
-                  open(outp,"w",encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\\n<tv></tv>'); return
+                if not files: open(outp,"w",encoding="utf-8").write('<?xml version="1.0" encoding="UTF-8"?>\n<tv></tv>'); return
                 t0=ET.parse(files[0]); r0=t0.getroot()
-                chs=set(c.get('id','') for c in r0.findall('channel'))
-                progs=set((p.get('channel',''),p.get('start','')) for p in r0.findall('programme'))
+                chs=set(c.get('id','') for c in r0.findall('channel')); progs=set((p.get('channel',''),p.get('start','')) for p in r0.findall('programme'))
                 for pth in files[1:]:
                   try: r=ET.parse(pth).getroot()
                   except: continue
                   for c in r.findall('channel'):
-                    cid=c.get('id','')
-                    if cid and cid not in chs:
-                      r0.append(c); chs.add(cid)
+                    cid=c.get('id',''); if cid and cid not in chs: r0.append(c); chs.add(cid)
                   for pr in r.findall('programme'):
-                    k=(pr.get('channel',''),pr.get('start',''))
-                    if k not in progs:
-                      r0.append(pr); progs.add(k)
+                    k=(pr.get('channel',''),pr.get('start','')); if k not in progs: r0.append(pr); progs.add(k)
                 try: ET.indent(t0,space="  ",level=0)
                 except: pass
                 t0.write(outp,encoding="utf-8",xml_declaration=True)
-            merge(os.path.join(temp,"out-main","_main__*.xml"), os.path.join(gw,"m_epg.xml"))
-            merge(os.path.join(temp,"out-d","_d__*.xml"),      os.path.join(gw,"d_epg.xml"))
+            merge(os.path.join(temp,"out-main","_main__*.xml"), os.path.join(gw,"m_epg.xml")); merge(os.path.join(temp,"out-d","_d__*.xml"), os.path.join(gw,"d_epg.xml"))
             PY
             echo "::endgroup::"
-
             echo "m_epg.xml ->  $(grep -c '<channel' "${GITHUB_WORKSPACE}/m_epg.xml") channels"
             echo "d_epg.xml ->  $(grep -c '<channel' "${GITHUB_WORKSPACE}/d_epg.xml") channels"
-
-            SITE="${OUTDIR}/site"
-            mkdir -p "$SITE"
-            cp "${GITHUB_WORKSPACE}/m_epg.xml" "${SITE}/"
-            cp "${GITHUB_WORKSPACE}/d_epg.xml" "${SITE}/"
+            SITE="${OUTDIR}/site"; mkdir -p "$SITE"
+            cp "${GITHUB_WORKSPACE}/m_epg.xml" "${SITE}/"; cp "${GITHUB_WORKSPACE}/d_epg.xml" "${SITE}/"
             [ -f "${GITHUB_WORKSPACE}/m_playlist.m3u8" ] && cp "${GITHUB_WORKSPACE}/m_playlist.m3u8" "${SITE}/"
             [ -f "${GITHUB_WORKSPACE}/d_playlist.m3u8" ] && cp "${GITHUB_WORKSPACE}/d_playlist.m3u8" "${SITE}/"
             echo "SITE=${SITE}" >> "$GITHUB_ENV"
@@ -208,7 +177,6 @@ jobs:
       NO_DASH: ${{ inputs.no_dashboard && '1' || '0' }}
       TV_LOG: tv_epg.log
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      RUN_AT: ${{ github.event.head_commit.timestamp || '' }}
       DASH_COMMIT_MSG: 'EPG Updated! 📺'
     steps:
       - name: Checkout
@@ -225,9 +193,9 @@ jobs:
           name: tv-logs
           path: .
 
-      - name: Update README via dashboard.py
+      - name: Update README via dashboard.py (tv section only)
         run: |
-          python dashboard.py
+          python dashboard.py tv --log "$TV_LOG"
 
   publish_assets:
     if: ${{ github.event_name == 'push' }}
