@@ -2,7 +2,7 @@ name: Trakt lists
 
 on:
   schedule:
-    - cron: '0 5 * * *'   # 6 am CET / 7 am CEST
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -22,9 +22,6 @@ concurrency:
 jobs:
   trakt_lists:
     runs-on: ubuntu-latest
-    env:
-      RUN_EVENT: ${{ github.event_name }}
-      RUN_ID: ${{ github.run_id }}
     outputs:
       status: ${{ steps.run_trakt.outputs.status }}
     steps:
@@ -50,8 +47,6 @@ jobs:
           echo "$KEY_B64" | base64 -d > ~/.ssh/trakt_lists
           chmod 600 ~/.ssh/trakt_lists
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-      
-          # Test (usa GIT_SSH_COMMAND per non usare ssh-agent)
           GIT_SSH_COMMAND='ssh -i ~/.ssh/trakt_lists -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' \
             git ls-remote git@github.com:dtvabrand/updates.git >/dev/null
 
@@ -75,6 +70,8 @@ jobs:
           exit $ec
 
       - name: Commit tokens to private repo if changed
+        env:
+          GIT_SSH_COMMAND: ssh -i ~/.ssh/trakt_lists -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes
         run: |
           cd updates
           git config user.name "github-actions"
@@ -82,19 +79,6 @@ jobs:
           git add trakt_tokens.json
           if ! git diff --cached --quiet; then
             git commit -m "Trakt tokens updated"
-            git push || true
-          fi
-
-      - name: Commit QIDS if changed (public repo)
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add trakt_lists.py
-          if ! git diff --cached --quiet; then
-            git commit --allow-empty-message -m ""
-            git pull --rebase --autostash || true
             git push || true
           fi
 
@@ -111,10 +95,9 @@ jobs:
     needs: trakt_lists
     runs-on: ubuntu-latest
     env:
-      RUN_EVENT: ${{ github.event_name }}
-      RUN_ID: ${{ github.run_id }}
-      GITHUB_TOKEN: ${{ github.token }}
-      STATUS: ${{ needs.trakt_lists.outputs.status || needs.trakt_lists.result }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      DASH_COMMIT_MSG: 'New films available! 🛸'
+      TRAKT_LOG: trakt_run.log
     steps:
       - uses: actions/checkout@v4
 
@@ -122,35 +105,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install deps (runner 2)
-        env:
-          PIP_DISABLE_PIP_VERSION_CHECK: '1'
-          PIP_NO_PYTHON_VERSION_WARNING: '1'
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
-
       - name: Download trakt log artifact
         uses: actions/download-artifact@v4
         with:
           name: trakt-log
           path: .
 
-      - name: Update README (badges + anchors)
-        env:
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          RUN_AT: ${{ steps.ts.outputs.now }}
+      - name: Update README (trakt section only)
         run: |
-          python dashboard.py trakt --log trakt_run.log --status "${STATUS}"
-
-      - name: Commit README
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          rm -f *_run.log || true
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add -A
-          git commit -m "New films available! 🛸" || echo "No changes"
-          git pull --rebase --autostash || true
-          git push || true
+          python dashboard.py trakt --log "$TRAKT_LOG"
