@@ -167,7 +167,7 @@ jobs:
           set -euo pipefail
           printf '%s\n' "$PIPELINE" > "$RUNNER_TEMP/pipeline.sh"
           chmod +x "$RUNNER_TEMP/pipeline.sh"
-          bash "$RUNNER_TEMP/pipeline.sh"
+          bash "$RUNNER_TEMP/pipeline.sh" 2>&1 | tee "$GITHUB_WORKSPACE/tv_epg.log"          
 
       - name: Upload artifact to Pages
         uses: actions/upload-pages-artifact@v3
