@@ -47,11 +47,12 @@ jobs:
           UPDATES_DEPLOY_KEY: ${{ secrets.UPDATES_DEPLOY_KEY }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s' "$UPDATES_DEPLOY_KEY" > ~/.ssh/trakt_lists
-          chmod 600 ~/.ssh/trakt_lists
+          printf '%s\n' "$UPDATES_DEPLOY_KEY" > ~/.ssh/updates_ed25519
+          chmod 600 ~/.ssh/updates_ed25519
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/trakt_lists
+          ssh-add ~/.ssh/updates_ed25519
+          ssh -o StrictHostKeyChecking=no -T git@github.com || true
 
       - name: Clone private updates repo
         run: |
