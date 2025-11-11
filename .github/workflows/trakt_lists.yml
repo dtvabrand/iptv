@@ -44,25 +44,20 @@ jobs:
 
       - name: Setup SSH for updates repo
         env:
-          UPDATES_DEPLOY_KEY: ${{ secrets.UPDATES_DEPLOY_KEY }}
+          KEY_B64: ${{ secrets.UPDATES_DEPLOY_KEY_B64 }}
         run: |
-          set -e
           mkdir -p ~/.ssh
-          echo "$UPDATES_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/updates_ed25519
-          chmod 600 ~/.ssh/updates_ed25519
+          echo "$KEY_B64" | base64 -d > ~/.ssh/trakt_lists
+          chmod 600 ~/.ssh/trakt_lists
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          cat > ~/.ssh/config <<'EOF'
-          Host github.com
-            IdentityFile ~/.ssh/updates_ed25519
-            IdentitiesOnly yes
-            StrictHostKeyChecking accept-new
-          EOF
-          chmod 600 ~/.ssh/config
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/updates_ed25519
-          ssh -T git@github.com || true
+      
+          # Test (usa GIT_SSH_COMMAND per non usare ssh-agent)
+          GIT_SSH_COMMAND='ssh -i ~/.ssh/trakt_lists -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' \
+            git ls-remote git@github.com:dtvabrand/updates.git >/dev/null
 
       - name: Clone private updates repo
+        env:
+          GIT_SSH_COMMAND: ssh -i ~/.ssh/trakt_lists -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes
         run: |
           rm -rf updates
           git clone git@github.com:dtvabrand/updates.git updates
