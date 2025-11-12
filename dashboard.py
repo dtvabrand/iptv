@@ -138,7 +138,7 @@ def overall_badges(update_service,status):
     cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
     def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     def wrap(s,href): u=img(s); return f"[![{s}]({u})]({href})" if href else f"![{s}]({u})"
     def last_href(hist,svc): m=re.search(r'\[!\['+re.escape(svc)+r'\]\([^)]+\)\]\(([^)]+)\)',hist); return m.group(1) if m else ""
     hrefs={}; 
@@ -195,6 +195,7 @@ def update_trakt(log_path,status="success"):
 
 def parse_tv_table_and_badges(log_path):
     M=D="0"; site_counts={}; fails=set(); notes_map={}
+    ln_m_abs=None; ln_d_abs=None; group_starts=[]
     re_m = re.compile(r"m_epg\.xml\s*->\s*(\d+)\s+channels")
     re_d = re.compile(r"d_epg\.xml\s*->\s*(\d+)\s+channels")
     re_row = re.compile(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels")
@@ -202,23 +203,24 @@ def parse_tv_table_and_badges(log_path):
     re_warn = re.compile(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)", re.I)
     try:
         with io.open(log_path, "r", encoding="utf-8", errors="replace") as f:
-            for line in f:
-                if M == "0":
-                    m = re_m.search(line)
-                    if m: M = m.group(1); continue
-                if D == "0":
-                    m = re_d.search(line)
-                    if m: D = m.group(1); continue
-                m = re_row.search(line)
+            for i, line in enumerate(f, 1):
+                clean_line = ANSI.sub("", line.replace("\r", ""))
+                if "##[group]Run " in clean_line: group_starts.append(i)
+                if not ln_m_abs:
+                    m = re_m.search(clean_line)
+                    if m: M = m.group(1); ln_m_abs = i; continue
+                if not ln_d_abs:
+                    m = re_d.search(clean_line)
+                    if m: D = m.group(1); ln_d_abs = i; continue
+                m = re_row.search(clean_line)
                 if m:
                     g, site, n = m.groups(); s = site_counts.setdefault(site, {"M": 0, "D": 0, "fail": False})
                     if g == "main": s["M"] += int(n)
                     else: s["D"] += int(n)
                     continue
-                m = re_fail.search(line)
-                if m:
-                    fails.add(m.group(2)); continue
-                m = re_warn.search(line)
+                m = re_fail.search(clean_line)
+                if m: fails.add(m.group(2)); continue
+                m = re_warn.search(clean_line)
                 if m:
                     site, chan, progs = m.groups()
                     if int(progs) == 0: notes_map.setdefault(site, set()).add(re.sub(r"\s+", " ", chan.strip()))
@@ -227,7 +229,7 @@ def parse_tv_table_and_badges(log_path):
     if not site_counts and M == "0" and D == "0":
         hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
         head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
-        return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb}
+        return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb,"ln_m":None,"ln_d":None}
     lines=[]; notes=[]; fail_sites=[]
     for site in sorted(site_counts.keys()):
         s = site_counts[site]; warn_set = notes_map.get(site, set())
@@ -243,18 +245,22 @@ def parse_tv_table_and_badges(log_path):
         uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
     if fail_sites: extra.append(f"❌ Failures\n{len(set(fail_sites))} site(s) error: {', '.join(sorted(set(fail_sites)))}")
     hb=f"{enc_badge(shield('M',M,COL['a']), '')} {enc_badge(shield('D',D,COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
-    return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb}
+    def find_nearest_start(idx):
+        if not idx or not group_starts: return None
+        s = [g for g in group_starts if g <= idx]
+        return max(s) if s else None
+    ln_m_start = find_nearest_start(ln_m_abs); ln_d_start = find_nearest_start(ln_d_abs)
+    ln_m = (ln_m_abs - ln_m_start + 1) if (ln_m_abs and ln_m_start) else None
+    ln_d = (ln_d_abs - ln_d_start + 1) if (ln_d_abs and ln_d_start) else None
+    if ln_m is not None and ln_m < 1: ln_m = 1
+    if ln_d is not None and ln_d < 1: ln_d = 1
+    return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"ln_m":ln_m,"ln_d":ln_d}
 
 def update_tv(log_path,status="success"):
     md=read(RD); tv=parse_tv_table_and_badges(log_path)
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
     job_id=os.getenv("TV_JOB_ID","").strip(); step_idx=os.getenv("TV_STEP_IDX","5").strip()
-    ln_m=ln_d=None; raw=read(log_path,"")
-    if raw:
-        gm=first_line(raw,("m_epg.xml ->",)); sm=nearest_group_start_before(raw,gm) if gm else None; ln_m=(gm-sm+1) if (gm and sm) else None
-        gd=first_line(raw,("d_epg.xml ->",)); sd=nearest_group_start_before(raw,gd) if gd else None; ln_d=(gd-sd+1) if (gd and sd) else None
-        if ln_m is not None and ln_m<1: ln_m=1
-        if ln_d is not None and ln_d<1: ln_d=1
+    ln_m = tv.get("ln_m"); ln_d = tv.get("ln_d")
     if not job_id:
         _dbg("TV_JOB_ID not set, falling back to API")
         if owner and repo and run_id:
