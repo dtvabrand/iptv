@@ -138,7 +138,7 @@ def overall_badges(update_service,status):
     cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
     def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
-    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     def wrap(s,href): u=img(s); return f"[![{s}]({u})]({href})" if href else f"![{s}]({u})"
     def last_href(hist,svc): m=re.search(r'\[!\['+re.escape(svc)+r'\]\([^)]+\)\]\(([^)]+)\)',hist); return m.group(1) if m else ""
     hrefs={}; 
@@ -176,7 +176,7 @@ def update_trakt(log_path,status="success"):
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
     nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color); runb=badgen_run(ts_now_it(),COL["run"])
-    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_movies=(f"{base}/job/{job_id}#step:{step_idx}:{ln_movies}" if (base and job_id and step_idx and ln_movies) else base)
     href_token=(f"{base}/job/{job_id}#step:{step_idx}:{ln_token}" if (base and job_id and step_idx and ln_token) else base)
     href_run=(base or "")
@@ -259,15 +259,15 @@ def parse_tv_table_and_badges(log_path):
 def update_tv(log_path,status="success"):
     md=read(RD); tv=parse_tv_table_and_badges(log_path)
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
+    # Leggi TV_JOB_ID e TV_STEP_IDX dalle variabili d'ambiente
     job_id=os.getenv("TV_JOB_ID","").strip(); step_idx=os.getenv("TV_STEP_IDX","5").strip()
     ln_m = tv.get("ln_m"); ln_d = tv.get("ln_d")
-    if not job_id:
-        _dbg("TV_JOB_ID not set, falling back to API")
-        if owner and repo and run_id:
-            job_id_api,step_idx_api,_=find_job_and_step(owner,repo,run_id,prefer=("live tv","tv","epg"),step_exact=("Run tv","Run epg","Run script"),step_prefix=("Run ",))
-            if job_id_api: job_id=job_id_api
-            if step_idx_api: step_idx=str(step_idx_api)
-    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+
+    # RIMOSSO IL BLOCCO 'if not job_id' che eseguiva l'API lenta
+    # Se TV_JOB_ID non è impostato (vuoto), job_id sarà "" e i link punteranno al run generale.
+    
+    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    # Se job_id è vuoto/non disponibile, href_m e href_d puntano a base
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
