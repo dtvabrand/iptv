@@ -216,12 +216,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     env:
-      NO_DASH: ${{ inputs.no_dashboard && '1' || '0' }}
-      TV_LOG: tv_epg.log
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      RUN_EVENT: ${{ github.event_name }}
+      RUN_ID: ${{ github.run_id }}
       GITHUB_TOKEN: ${{ github.token }}
       DASH_COMMIT_MSG: 'EPG Updated! 📺'
+      TV_LOG: tv_epg.log
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
