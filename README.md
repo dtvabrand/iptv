@@ -1,10 +1,12 @@
 ### 📊 Dashboard
 <!-- OVERALL:BADGES -->
+![Trakt](https://img.shields.io/static/v1?label=Trakt&message=pending%2C%20%E2%80%94&color=95a5a6&cacheSeconds=300) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2011%3A14%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293898126)
 <!-- /OVERALL:BADGES -->
 
 <details><summary>Previous days</summary>
 
 <!-- OVERALL:HISTORY -->
+![Trakt](https://img.shields.io/static/v1?label=Trakt&message=pending%2C%20%E2%80%94&color=95a5a6&cacheSeconds=300) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2011%3A14%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293898126) <!-- SESSION:dispatch:19293898126 -->
 <!-- /OVERALL:HISTORY -->
 </details>
 
@@ -67,14 +69,19 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
+![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2011%3A14%20am/f1c40f)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
+| Site | M | D | Status |
+|---|---:|---:|---|
+
 <!-- /TV:OUTPUT -->
 
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2011%3A14%20am/f1c40f)
 <!-- /TV:HISTORY -->
 </details>
 
