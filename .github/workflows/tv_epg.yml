@@ -6,7 +6,7 @@ on:
       - 'm_playlist.m3u8'
       - 'd_playlist.m3u8'
   schedule:
-    - cron: '0 11 * * *'
+    - cron: '0 11 * * *'    # 12 pm CET / 1 pm CEST
   workflow_dispatch:
     inputs:
       no_dashboard:
