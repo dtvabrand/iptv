@@ -176,7 +176,7 @@ def update_trakt(log_path,status="success"):
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
     nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color); runb=badgen_run(ts_now_it(),COL["run"])
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_movies=(f"{base}/job/{job_id}#step:{step_idx}:{ln_movies}" if (base and job_id and step_idx and ln_movies) else base)
     href_token=(f"{base}/job/{job_id}#step:{step_idx}:{ln_token}" if (base and job_id and step_idx and ln_token) else base)
     href_run=(base or "")
@@ -194,36 +194,54 @@ def update_trakt(log_path,status="success"):
     overall_badges("Trakt","failure" if err else ("success" if (refreshed or valid) else "neutral"))
 
 def parse_tv_table_and_badges(log_path):
-    raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
-    if not raw:
+    M=D="0"; site_counts={}; fails=set(); notes_map={}
+    re_m = re.compile(r"m_epg\.xml\s*->\s*(\d+)\s+channels")
+    re_d = re.compile(r"d_epg\.xml\s*->\s*(\d+)\s+channels")
+    re_row = re.compile(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels")
+    re_fail = re.compile(r"FAIL\s+(main|d)\s+([a-z0-9\.\-]+)")
+    re_warn = re.compile(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)", re.I)
+    try:
+        with io.open(log_path, "r", encoding="utf-8", errors="replace") as f:
+            for line in f:
+                if M == "0":
+                    m = re_m.search(line)
+                    if m: M = m.group(1); continue
+                if D == "0":
+                    m = re_d.search(line)
+                    if m: D = m.group(1); continue
+                m = re_row.search(line)
+                if m:
+                    g, site, n = m.groups(); s = site_counts.setdefault(site, {"M": 0, "D": 0, "fail": False})
+                    if g == "main": s["M"] += int(n)
+                    else: s["D"] += int(n)
+                    continue
+                m = re_fail.search(line)
+                if m:
+                    fails.add(m.group(2)); continue
+                m = re_warn.search(line)
+                if m:
+                    site, chan, progs = m.groups()
+                    if int(progs) == 0: notes_map.setdefault(site, set()).add(re.sub(r"\s+", " ", chan.strip()))
+    except FileNotFoundError: _dbg(f"Log file not found: {log_path}")
+    except Exception as e: _dbg(f"Error parsing log file: {e}")
+    if not site_counts and M == "0" and D == "0":
         hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
         head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
         return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb}
-    m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
-    d=re.search(r"d_epg\.xml\s*->\s*(\d+)\s+channels",raw); D=d.group(1) if d else "0"
-    for g,site,n in re.findall(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels",raw): rows.append((g,site,int(n)))
-    site_counts={}
-    for g,site,n in rows:
-        s=site_counts.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
-        if g=="main": s["M"]+=n
-        else: s["D"]+=n
-    for site in list(site_counts.keys()):
-        if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): s=site_counts[site]; s["fail"]=True
-    for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{{2}}\s+\d{{1,2}},\s*\d{{4}}\s*\((\d+)\s+programs\)",raw,re.I):
-        if site in site_counts and int(progs)==0: site_counts[site]["warn"].add(re.sub(r"\s+"," ",chan.strip()))
-    lines=[]
+    lines=[]; notes=[]; fail_sites=[]
     for site in sorted(site_counts.keys()):
-        s=site_counts[site]; st="✅"
-        if s["fail"]: st="❌"
-        elif s["warn"]: st="⚠️"
+        s = site_counts[site]; warn_set = notes_map.get(site, set())
+        if site in fails: s["fail"] = True
+        st="✅"
+        if s["fail"]: st="❌"; fail_sites.append(site)
+        elif warn_set: st="⚠️"
         lines.append(f"| {site} | {s['M']} | {s['D']} | {st} |")
-        if s["warn"]: notes.extend(sorted(s["warn"]))
-        if s["fail"]: fails.append(site)
+        if warn_set: notes.extend(sorted(list(warn_set)))
     head="| Site | M | D | Status |\n|---|---:|---:|---|\n"; table=head+("\n".join(lines) if lines else "")
     extra=[]
     if notes:
         uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
-    if fails: extra.append(f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}")
+    if fail_sites: extra.append(f"❌ Failures\n{len(set(fail_sites))} site(s) error: {', '.join(sorted(set(fail_sites)))}")
     hb=f"{enc_badge(shield('M',M,COL['a']), '')} {enc_badge(shield('D',D,COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb}
 
@@ -243,7 +261,7 @@ def update_tv(log_path,status="success"):
             job_id_api,step_idx_api,_=find_job_and_step(owner,repo,run_id,prefer=("live tv","tv","epg"),step_exact=("Run tv","Run epg","Run script"),step_prefix=("Run ",))
             if job_id_api: job_id=job_id_api
             if step_idx_api: step_idx=str(step_idx_api)
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
