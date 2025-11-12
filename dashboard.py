@@ -36,70 +36,12 @@ IT_MONTH=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic
 def ts_now_it():
     z=datetime.now(ZoneInfo("Europe/Rome")); d=f"{z.day:02d} {IT_MONTH[z.month-1]} {z.year}"; h=z.hour%12 or 12; m=f"{z.minute:02d}"; ap="am" if z.hour<12 else "pm"; return f"{d} {h}:{m} {ap}"
 
-def overall_badges(update_service,status):
-    md=read(RD); badges=read_block(md,"OVERALL:BADGES"); hist=read_block(md,"OVERALL:HISTORY")
-    def extract(b): msgs,cols={},{}
-    def _ex(b):
-        msgs,cols={},{}
-        if not b: return msgs,cols
-        for s in SERV:
-            r=re.search(rf'\[!\[{re.escape(s)}\]\(([^)]+)\)\]\(([^)]*)\)',b)
-        return msgs,cols
-    def parse_imgs(b):
-        msgs,cols={},{}
-        if not b: return msgs,cols
-        for s in SERV:
-            m=re.search(rf'\[!\[{re.escape(s)}\]\((https://img\.shields\.io/[^)]+label={re.escape(s)}[^)]*)\)\]\(([^)]*)\)',b)
-            if m:
-                u=m.group(1)
-                q=dict(x.split("=",1) for x in (u.split("?",1)[1] if "?" in u else "").split("&") if "=" in x)
-                message=unquote((q.get("message") or "").replace("+"," "))
-                color=unquote(q.get("color") or "")
-                msgs[s]=message; cols[s]=color
-        return msgs,cols
-    msgs,cols=parse_imgs(badges)
-    if len(msgs)<len(SERV):
-        m2,c2=parse_imgs(hist); 
-        for k,v in m2.items():
-            if k not in msgs: msgs[k]=v
-        for k,v in c2.items():
-            if k not in cols: cols[k]=v
-    for s in SERV:
-        msgs.setdefault(s,"pending, —"); cols.setdefault(s,COL["date"])
-    evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
-    stamp=ts_now_it()
-    msgs[update_service]=f"{evt}, {stamp}"
-    cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
-    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
-    def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
-    def wrap(s,href): u=img(s); return f"[![{s}]({u})]({href})" if href else f"![{s}]({u})"
-    def last_href(hist,s):
-        m=re.search(r'\[!\['+re.escape(s)+r'\]\([^)]+\)\]\(([^)]*)\)',hist)
-        return m.group(1) if m else ""
-    hrefs={s:(base if s==update_service else last_href(hist,s)) for s in SERV}
-    row=" ".join(wrap(s,hrefs[s]) for s in SERV)
-    md=repl_block(md,"OVERALL:BADGES",row)
-    today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
-    tag=f"<!-- SESSION:{key} -->"
-    hist_lines=[l.strip() for l in read_block(md,"OVERALL:HISTORY").splitlines() if l.strip() and set(l.strip())-set("<>/br ")]
-    updated=False
-    for i,l in enumerate(hist_lines):
-        if l.endswith(tag):
-            body=l[:-len(tag)].rstrip()
-            parts=[]
-            for s in SERV:
-                parts.append(wrap(s,base if s==update_service else last_href(hist,s)))
-            hist_lines[i]=(" ".join(parts)+" "+tag).strip(); updated=True; break
-    if not updated:
-        hist_lines=[(row+" "+tag).strip()]+hist_lines
-    hist_lines=hist_lines[:30]
-    md=repl_block(md,"OVERALL:HISTORY","<br>\n".join(hist_lines).strip())
-    write(RD,md)
+def shield(label,val,color): return f"https://img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
+def badgen_run(ts,color): return f"https://badgen.net/badge/Run/{quote(ts,safe='')}/{quote(color,safe='')}"
+def enc_badge(u,href): return f"[![X]({u})]({href})" if href else f"![X]({u})"
 
 def gh_headers(extra=None):
-    h={"User-Agent":"dash-updater"}
-    t=os.getenv("GITHUB_TOKEN","").strip()
+    h={"User-Agent":"dash-updater"}; t=os.getenv("GITHUB_TOKEN","").strip()
     if t: h["Authorization"]=f"Bearer {t}"
     if extra: h.update(extra)
     return h
@@ -157,11 +99,7 @@ def first_line(raw,needles):
             if n in ln: return i
     return None
 
-def enc_badge(u,href): return f"[![X]({u})]({href})" if href else f"![X]({u})"
-def shield(label,val,color): return f"https://img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
-def badgen_run(ts,color): return f"https://badgen.net/badge/Run/{quote(ts,safe='')}/{quote(color,safe='')}"
-
-def parse_new_titles_from_log(txt):
+def parse_titles(txt):
     titles=[]
     for raw in clean_lines(txt):
         if "📝 QID for" in raw:
@@ -175,11 +113,54 @@ def parse_new_titles_from_log(txt):
             if t and t not in titles: titles.append(t)
     return titles
 
+def overall_badges(update_service,status):
+    md=read(RD); badges=read_block(md,"OVERALL:BADGES"); hist=read_block(md,"OVERALL:HISTORY")
+    def parse_imgs(b):
+        msgs,cols={},{}
+        if not b: return msgs,cols
+        for s in SERV:
+            m=re.search(rf'\[!\[{re.escape(s)}\]\((https://img\.shields\.io/[^)]+label={re.escape(s)}[^)]*)\)\]\(([^)]*)\)',b)
+            if m:
+                u=m.group(1); q=dict(x.split("=",1) for x in (u.split("?",1)[1] if "?" in u else "").split("&") if "=" in x)
+                message=unquote((q.get("message") or "").replace("+"," ")); color=unquote(q.get("color") or "")
+                msgs[s]=message; cols[s]=color
+        return msgs,cols
+    msgs,cols=parse_imgs(badges)
+    if len(msgs)<len(SERV):
+        m2,c2=parse_imgs(hist)
+        for k,v in m2.items():
+            if k not in msgs: msgs[k]=v
+        for k,v in c2.items():
+            if k not in cols: cols[k]=v
+    for s in SERV:
+        msgs.setdefault(s,"pending, —"); cols.setdefault(s,COL["date"])
+    evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); stamp=ts_now_it()
+    msgs[update_service]=f"{evt}, {stamp}"
+    cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
+    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
+    def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
+    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    def wrap(s,href): u=img(s); return f"[![{s}]({u})]({href})" if href else f"![{s}]({u})"
+    hrefs={s:(base if s==update_service else "") for s in SERV}
+    row=" ".join(wrap(s,hrefs[s]) for s in SERV)
+    md=repl_block(md,"OVERALL:BADGES",row)
+    today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
+    tag=f"<!-- SESSION:{key} -->"
+    hist_lines=[l.strip() for l in read_block(md,"OVERALL:HISTORY").splitlines() if l.strip() and set(l.strip())-set("<>/br ")]
+    updated=False
+    for i,l in enumerate(hist_lines):
+        if l.endswith(tag):
+            hist_lines[i]=(row+" "+tag).strip(); updated=True; break
+    if not updated:
+        hist_lines=[(row+" "+tag).strip()]+hist_lines
+    hist_lines=hist_lines[:30]
+    md=repl_block(md,"OVERALL:HISTORY","<br>\n".join(hist_lines).strip()); write(RD,md)
+
 def update_trakt(log_path,status="success"):
-    md=read(RD); txt=read(log_path,""); titles=parse_new_titles_from_log(txt); new_count=len(titles)
-    err=("🧩 Need new refresh token!" in txt); refreshed=("🔄 Trakt token refresh completed" in txt or "Trakt token refresh completed" in txt); valid=("🔐 Trakt token valid" in txt or "Trakt token valid" in txt); refreshing=("⏳ Trakt token expired. Refreshing" in txt)
-    token_state="failed" if err else ("refreshed" if refreshed else ("valid" if valid else ("refreshing" if refreshing else "unknown")))
-    token_color=COL["err"] if token_state=="failed" else (COL["ok"] if token_state=="refreshed" else (COL["token"] if token_state=="valid" else COL["date"]))
+    md=read(RD); txt=read(log_path,""); titles=parse_titles(txt); new_count=len(titles)
+    err=("🧩 Need new refresh token!" in txt); refreshed=("🔄 Trakt token refresh completed" in txt); valid=("🔐 Trakt token valid" in txt)
+    token_state="expired" if err else ("refreshed" if refreshed else ("valid" if valid else "unknown"))
+    token_color=COL["err"] if token_state=="expired" else (COL["ok"] if token_state=="refreshed" else (COL["token"] if token_state=="valid" else COL["date"]))
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
     job_id=step_idx=ln_movies=ln_token=None; raw=""
     if owner and repo and run_id:
@@ -187,8 +168,8 @@ def update_trakt(log_path,status="success"):
         raw=fetch_job_log(owner,repo,job_id) if job_id else ""
         if raw:
             gi=first_line(raw,["📝 QID for","🍿 "]); gs=nearest_group_start_before(raw,gi) if gi else None; ln_movies=(gi-gs+1) if (gi and gs) else None
-            pref=["🔄 Trakt token refresh completed","🔐 Trakt token valid","🧩 Need new refresh token!","⏳ Trakt token expired. Refreshing","Trakt token refresh completed","Trakt token valid","Trakt token expired"]
-            gt=first_line(raw,pref); st=nearest_group_start_before(raw,gt) if gt else None; ln_token=(gt-st+1) if (gt and st) else None
+            t_needles=("🔄 Trakt token refresh completed",) if token_state=="refreshed" else (("🔐 Trakt token valid",) if token_state=="valid" else (("🧩 Need new refresh token!",) if token_state=="expired" else ()))
+            gt=first_line(raw,t_needles) if t_needles else None; st=nearest_group_start_before(raw,gt) if gt else None; ln_token=(gt-st+1) if (gt and st) else None
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
     nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color); runb=badgen_run(ts_now_it(),COL["run"])
@@ -206,8 +187,7 @@ def update_trakt(log_path,status="success"):
     chunk=(" ".join([enc_badge(nm,href_movies),enc_badge(tk,href_token),enc_badge(runb,href_run),sent]).strip()+(("""<br>\n"""+latest) if latest else ""))
     parts=[x for x in (prev or "").split("\n\n") if x.strip()]
     new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
-    md=repl_block(md,"TRAKT:HISTORY",new_hist)
-    write(RD,md)
+    md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
     overall_badges("Trakt","failure" if err else ("success" if (refreshed or valid) else "neutral"))
 
 def parse_tv_table_and_badges(log_path):
@@ -225,7 +205,7 @@ def parse_tv_table_and_badges(log_path):
         if g=="main": s["M"]+=n
         else: s["D"]+=n
     for site in list(site_counts.keys()):
-        if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): site_counts[site]["fail"]=True
+        if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): s=site_counts[site]; s["fail"]=True
     for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{{2}}\s+\d{{1,2}},\s*\d{{4}}\s*\((\d+)\s+programs\)",raw,re.I):
         if site in site_counts and int(progs)==0: site_counts[site]["warn"].add(re.sub(r"\s+"," ",chan.strip()))
     lines=[]
@@ -265,5 +245,9 @@ def main():
         try: update_tv(lp,st)
         except Exception as e: _dbg("fatal tv",e); overall_badges("Live TV","failure")
     else: sys.exit(2)
+    msg=os.getenv("DASH_COMMIT_MSG","").strip()
+    if msg:
+        os.system('git config user.name "github-actions"'); os.system('git config user.email "github-actions@github.com"')
+        os.system('git add README.md'); os.system(f'git commit -m "{msg}" || true'); os.system('git push || true')
 
 if __name__=="__main__": main()
