@@ -228,13 +228,25 @@ def parse_tv_table_and_badges(log_path):
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb}
 
 def update_tv(log_path,status="success"):
-    md=read(RD); tv=parse_tv_table_and_badges(log_path)
-    dash=" ".join([enc_badge(shield('M',tv['M'],COL['a']),''),enc_badge(shield('D',tv['D'],COL['a']),''),enc_badge(badgen_run(ts_now_it(),COL['run']), '')])
-    md=repl_block(md,"DASH:TV",dash)
-    md=repl_block(md,"TV:OUTPUT",tv["table"]+("\n\n"+tv["notes"] if tv["notes"] else ""))
-    prev=read_block(md,"TV:HISTORY"); chunk=tv["hist_badges"] + (("<br>\n"+tv["notes"]) if tv["notes"] else ""); parts=[x for x in (prev or "").split("\n\n") if x.strip()]
-    new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
-    md=repl_block(md,"TV:HISTORY",new_hist)
+    md=read(RD); raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
+    if raw:
+        m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
+        d=re.search(r"d_epg\.xml\s*->\s*(\d+)\s+channels",raw); D=d.group(1) if d else "0"
+        for g,site,n in re.findall(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels",raw): rows.append((g,site,int(n)))
+        site_counts={}; [site_counts.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False}) for _,site,_ in rows]
+        for g,site,n in rows: site_counts[site]["M" if g=="main" else "D"]+=n
+        [site_counts[site].update({"fail":True}) for site in site_counts if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw)]
+        for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
+            if site in site_counts and int(progs)==0: site_counts[site]["warn"].add(re.sub(r"\s+"," ",chan.strip()))
+        lines=[]; [lines.append(f"| {site} | {s['M']} | {s['D']} | {'❌' if s['fail'] else ('⚠️' if s['warn'] else '✅')} |") or notes.extend(sorted(s["warn"])) or fails.append(site) if s["fail"] else None for site,s in sorted(site_counts.items())]
+    head="| Site | M | D | Status |\n|---|---:|---:|---|\n"; table=head+("\n".join(lines) if lines else "")
+    extra=[]; uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; notes_txt=f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}" if uniq else ""; extra.append(notes_txt) if notes_txt else None
+    fails_txt=f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}" if fails else None; extra.append(fails_txt) if fails_txt else None
+    hb=f"{enc_badge(shield('M',M,COL['a']), '')} {enc_badge(shield('D',D,COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
+    dash=" ".join([enc_badge(shield('M',M,COL['a']),''),enc_badge(shield('D',D,COL['a']),''),enc_badge(badgen_run(ts_now_it(),COL['run']), '')])
+    md=repl_block(md,"DASH:TV",dash); md=repl_block(md,"TV:OUTPUT",table+("\n\n"+"\n\n".join(extra) if extra else ""))
+    prev=read_block(md,"TV:HISTORY"); chunk=hb+("\n\n"+"\n\n".join(extra) if extra else ""); parts=[x for x in (prev or "").split("\n\n") if x.strip()]
+    new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip(); md=repl_block(md,"TV:HISTORY",new_hist)
     write(RD,md); overall_badges("Live TV","success" if status=="success" else "failure")
 
 def main():
