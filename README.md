@@ -1,12 +1,13 @@
 ### 📊 Dashboard
 <!-- OVERALL:BADGES -->
-[![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A50%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293226807)
+[![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A51%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293271770)
 <!-- /OVERALL:BADGES -->
 
 <details><summary>Previous days</summary>
 
 <!-- OVERALL:HISTORY -->
-[![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A50%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293226807) <!-- SESSION:dispatch:19293226807 --><br>
+[![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A51%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293271770) <!-- SESSION:dispatch:19293271770 --><br>
+[![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) [![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A50%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293226807) <!-- SESSION:dispatch:19293226807 --><br><br>
 [![Trakt](https://img.shields.io/static/v1?label=Trakt&message=workflow_dispatch%2C%2012%20nov%202025%2010%3A48%20am&color=2ecc71&cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19293177360) ![Live TV](https://img.shields.io/static/v1?label=Live%20TV&message=pending%2C%20%E2%80%94&color=95a5a6&cacheSeconds=300) <!-- SESSION:dispatch:19293177360 -->
 <!-- /OVERALL:HISTORY -->
 </details>
@@ -72,7 +73,7 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
-![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2010%3A50%20am/f1c40f)
+![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2010%3A51%20am/f1c40f)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
@@ -88,6 +89,8 @@
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2010%3A51%20am/f1c40f)
+
 ![X](https://img.shields.io/badge/M-21-27ae60?cacheSeconds=300) ![X](https://img.shields.io/badge/D-31-27ae60?cacheSeconds=300) ![X](https://badgen.net/badge/Run/12%20nov%202025%2010%3A50%20am/f1c40f)
 <!-- /TV:HISTORY -->
 </details>
