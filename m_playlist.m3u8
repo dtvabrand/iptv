@@ -1,4 +1,4 @@
-#EXTM3U url-tvg="https://raw.githubusercontent.com/dtvabrand/Universal_Entertainment/refs/heads/main/epg.xml"
+#EXTM3U url-tvg="https://dtvabrand.github.io/entertainment/m_epg.xml"
 
 #EXTINF:-1 group-title="Italy" tvg-id="Rai1.it" tvg-logo="http://odmsto.com/uploads/tv_image/sm/rai-1-prtwes3x26ld.png" tvg-name="Rai 1",Rai 1
 https://raiuno3-live.akamaized.net/hls/live/2017910/raiuno3/raiuno3/playlist.m3u8
