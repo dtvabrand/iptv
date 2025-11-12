@@ -230,15 +230,19 @@ def parse_tv_table_and_badges(log_path):
 def update_tv(log_path,status="success"):
     md=read(RD); tv=parse_tv_table_and_badges(log_path)
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
-    job_id=step_idx=ln_m=ln_d=None; raw=""
-    raw=read(log_path,"")
+    job_id=os.getenv("TV_JOB_ID","").strip(); step_idx=os.getenv("TV_STEP_IDX","5").strip()
+    ln_m=ln_d=None; raw=read(log_path,"")
     if raw:
         gm=first_line(raw,("m_epg.xml ->",)); sm=nearest_group_start_before(raw,gm) if gm else None; ln_m=(gm-sm+1) if (gm and sm) else None
         gd=first_line(raw,("d_epg.xml ->",)); sd=nearest_group_start_before(raw,gd) if gd else None; ln_d=(gd-sd+1) if (gd and sd) else None
         if ln_m is not None and ln_m<1: ln_m=1
         if ln_d is not None and ln_d<1: ln_d=1
-    if owner and repo and run_id:
-        job_id,step_idx,_=find_job_and_step(owner,repo,run_id,prefer=("live tv","tv","epg"),step_exact=("Run tv","Run epg","Run script"),step_prefix=("Run ",))
+    if not job_id:
+        _dbg("TV_JOB_ID not set, falling back to API")
+        if owner and repo and run_id:
+            job_id_api,step_idx_api,_=find_job_and_step(owner,repo,run_id,prefer=("live tv","tv","epg"),step_exact=("Run tv","Run epg","Run script"),step_prefix=("Run ",))
+            if job_id_api: job_id=job_id_api
+            if step_idx_api: step_idx=str(step_idx_api)
     base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
