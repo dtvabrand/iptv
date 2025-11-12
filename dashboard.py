@@ -34,7 +34,7 @@ def clean_lines(t): return ANSI.sub("",(t or "").replace("\r","")).splitlines() 
 
 IT_MONTH=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"]
 def ts_now_it():
-    z=datetime.now(ZoneInfo("Europe/Rome")); d=f"{z.day:02d} {IT_MONTH[z.month-1]}"; h=z.hour%12 or 12; m=f"{z.minute:02d}"; ap="am" if z.hour<12 else "pm"; return f"{d} {z.year} {h}:{m} {ap}"
+    z=datetime.now(ZoneInfo("Europe/Rome")); d=f"{z.day:02d} {IT_MONTH[z.month-1]} {z.year}"; h=z.hour%12 or 12; m=f"{z.minute:02d}"; ap="am" if z.hour<12 else "pm"; return f"{d} {h}:{m} {ap}"
 
 def shield(label,val,color): return f"https://img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
 def badgen_run(ts,color): return f"https://badgen.net/badge/Run/{quote(ts,safe='')}/{quote(color,safe='')}"
@@ -72,6 +72,17 @@ def find_job_and_step(owner,repo,run_id,prefer=("trakt","trakt lists","trakt_lis
             if any(nm.startswith(p) for p in step_prefix): idx=i; break
     if not idx: idx=1
     return job.get("id"),idx,job
+
+def find_tv_job_and_step(owner,repo,run_id):
+    jobs=list_jobs(owner,repo,run_id)
+    job=next((j for j in jobs if "build epg" in (j.get("name","").lower())),None) or (jobs[0] if jobs else None)
+    if not job: return None,None
+    steps=job.get("steps") or []
+    idx=None
+    for i,s in enumerate(steps,1):
+        if (s.get("name") or "").strip()=="Build EPG": idx=i; break
+    if not idx: idx=int(os.getenv("TV_STEP_IDX","5") or "5")
+    return job.get("id"),idx
 
 def fetch_job_log(owner,repo,job_id):
     r=http_get(f"https://api.github.com/repos/{owner}/{repo}/actions/jobs/{job_id}/logs",gh_headers({"Accept":"*/*"}))
@@ -113,52 +124,41 @@ def parse_titles(txt):
             if t and t not in titles: titles.append(t)
     return titles
 
-def _extract_badge_from_line(line,svc):
-    m=re.search(r'\[!\['+re.escape(svc)+r'\]\((https://img\.shields\.io/[^)]+)\)\]\(([^)]*)\)',line)
-    if not m: return None
-    u,href=m.group(1),m.group(2)
-    q=dict(x.split("=",1) for x in (u.split("?",1)[1] if "?" in u else "").split("&") if "=" in x)
-    msg=unquote((q.get("message") or "").replace("+"," ")); col=unquote(q.get("color") or "")
-    return {"message":msg,"color":col,"href":href}
+def _extract_badge_markup(line,svc):
+    m=re.search(r'(\[!\['+re.escape(svc)+r'\]\([^)]+\)\]\([^)]+\)|!\['+re.escape(svc)+r'\]\([^)]+\))',line)
+    return m.group(1) if m else ""
 
-def _latest_for_service(hist,svc,prefer_non_pending=True):
-    if not hist: return None
-    lines=[l.strip() for l in hist.split("<br>") if l.strip()]
-    for idx,l in enumerate(lines):
-        b=_extract_badge_from_line(l,svc)
-        if not b: continue
-        if (not prefer_non_pending) or (b["message"] and not b["message"].lower().startswith("pending")): return b
-    for l in lines:
-        b=_extract_badge_from_line(l,svc)
+def _latest_badge_markup(hist,svc):
+    if not hist: return ""
+    for l in [x.strip() for x in hist.splitlines() if x.strip()]:
+        b=_extract_badge_markup(l,svc)
         if b: return b
-    return None
+    return ""
 
 def overall_badges(update_service,status):
     md=read(RD); badges=read_block(md,"OVERALL:BADGES"); hist=read_block(md,"OVERALL:HISTORY")
-    def parse_imgs(b):
-        msgs,cols,hrefs={},{},{}
-        if not b: return msgs,cols,hrefs
+    evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); stamp=ts_now_it()
+    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
+    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    cols={s:COL["date"] for s in SERV}; msgs={s:"pending, —" for s in SERV}; hrefs={s:"" for s in SERV}
+    def parse_current(b):
+        out={}
         for s in SERV:
-            m=re.search(r'\[!\['+re.escape(s)+r'\]\((https://img\.shields\.io/[^)]+)\)\]\(([^)]*)\)',b)
+            m=re.search(r'\[!\['+re.escape(s)+r'\]\((https://img\.shields\.io/[^)]+)\)\]\(([^)]*)\)',b or "")
             if m:
                 u,href=m.group(1),m.group(2); q=dict(x.split("=",1) for x in (u.split("?",1)[1] if "?" in u else "").split("&") if "=" in x)
-                msgs[s]=unquote((q.get("message") or "").replace("+"," ")); cols[s]=unquote(q.get("color") or ""); hrefs[s]=href
-        return msgs,cols,hrefs
-    msgs,cols,hrefs=parse_imgs(badges); m2,c2,h2=parse_imgs(hist)
+                out[s]=(unquote((q.get("message") or "").replace("+"," ")),unquote(q.get("color") or ""),href)
+        return out
+    cur=parse_current(badges)
     for s in SERV:
         if s!=update_service:
-            best=_latest_for_service(hist,s,prefer_non_pending=True) or _latest_for_service(hist,s,prefer_non_pending=False)
-            if best:
-                msgs[s]=best["message"]; cols[s]=best["color"] or COL["date"]; hrefs[s]=best["href"]
-            else:
-                msgs[s]=msgs.get(s) or m2.get(s) or "pending, —"; cols[s]=cols.get(s) or c2.get(s) or COL["date"]; hrefs[s]=hrefs.get(s) or h2.get(s) or ""
-    evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); stamp=ts_now_it()
+            mk=_latest_badge_markup(hist,s)
+            if mk: hrefs[s]=re.search(r'\]\(([^)]+)\)$',mk) and re.search(r'\]\(([^)]+)\)$',mk).group(1) or ""; msgs[s]=re.search(r'message=([^&]+)',mk) and unquote(re.search(r'message=([^&]+)',mk).group(1).replace("+"," ")) or msgs[s]; cols[s]=re.search(r'color=([^&]+)',mk) and unquote(re.search(r'color=([^&]+)',mk).group(1)) or cols[s]
+            elif s in cur: msgs[s],cols[s],hrefs[s]=cur[s]
     msgs[update_service]=f"{evt}, {stamp}"
     cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
-    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
+    hrefs[update_service]=base or hrefs.get(update_service,"")
     def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
-    if update_service not in hrefs or not hrefs[update_service]: hrefs[update_service]=base
     row=" ".join((f"[![{s}]({img(s)})]({hrefs.get(s,'')})" if hrefs.get(s) else f"![{s}]({img(s)})") for s in SERV)
     md=repl_block(md,"OVERALL:BADGES",row)
     today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
@@ -244,6 +244,10 @@ def update_tv(log_path,status="success"):
     md=read(RD); tv=parse_tv_table_and_badges(log_path)
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
     job_id=os.getenv("TV_JOB_ID","").strip(); step_idx=os.getenv("TV_STEP_IDX","5").strip()
+    if not job_id or not step_idx:
+        j,s=find_tv_job_and_step(owner,repo,run_id); 
+        if j: job_id=str(j)
+        if s: step_idx=str(s)
     ln_m=ln_d=None
     if owner and repo and run_id and job_id:
         raw=fetch_job_log(owner,repo,job_id)
