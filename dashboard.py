@@ -26,7 +26,7 @@ def repl_block(md,tag,body):
     return pat.sub(block,md) if pat.search(md) else (md+("\n" if not md.endswith("\n") else "")+block+"\n")
 
 def read_block(md,tag):
-    a,f=f"<!-- {tag} -->",f"<!-- /{tag} -->"; s,e=md.find(a),md.find(f); 
+    a,f=f"<!-- {tag} -->",f"<!-- /{tag} -->"; s,e=md.find(a),md.find(f);
     return "" if (s==-1 or e==-1 or e<s) else md[s+len(a):e].strip()
 
 ANSI=re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x1b]*\x1b\\|\x1b\][^\x07]*\x07")
@@ -141,7 +141,10 @@ def overall_badges(update_service,status):
     def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
     base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     def wrap(s,href): u=img(s); return f"[![{s}]({u})]({href})" if href else f"![{s}]({u})"
-    hrefs={s:(base if s==update_service else "") for s in SERV}
+    def last_href(hist,svc): m=re.search(r'\[!\['+re.escape(svc)+r'\]\([^)]+\)\]\(([^)]+)\)',hist); return m.group(1) if m else ""
+    hrefs={}; 
+    for s in SERV:
+        hrefs[s]= base if s==update_service else last_href(hist,s)
     row=" ".join(wrap(s,hrefs[s]) for s in SERV)
     md=repl_block(md,"OVERALL:BADGES",row)
     today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
@@ -229,19 +232,20 @@ def update_tv(log_path,status="success"):
     dash=" ".join([enc_badge(shield('M',tv['M'],COL['a']),''),enc_badge(shield('D',tv['D'],COL['a']),''),enc_badge(badgen_run(ts_now_it(),COL['run']), '')])
     md=repl_block(md,"DASH:TV",dash)
     md=repl_block(md,"TV:OUTPUT",tv["table"]+("\n\n"+tv["notes"] if tv["notes"] else ""))
-    prev=read_block(md,"TV:HISTORY"); chunk=tv["hist_badges"]; parts=[x for x in (prev or "").split("\n\n") if x.strip()]
-    md=repl_block(md,"TV:HISTORY",(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip())
+    prev=read_block(md,"TV:HISTORY"); chunk=tv["hist_badges"] + (("<br>\n"+tv["notes"]) if tv["notes"] else ""); parts=[x for x in (prev or "").split("\n\n") if x.strip()]
+    new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
+    md=repl_block(md,"TV:HISTORY",new_hist)
     write(RD,md); overall_badges("Live TV","success" if status=="success" else "failure")
 
 def main():
     if len(sys.argv)<2: print("Usage:\n  dashboard.py trakt --log trakt_run.log [--status success|failure]\n  dashboard.py tv --log tv_epg.log [--status success|failure]"); sys.exit(1)
     mode=sys.argv[1].lower(); arg=lambda f,d=None: sys.argv[sys.argv.index(f)+1] if f in sys.argv else d
     if mode=="trakt":
-        lp=arg("--log","trakt_run.log"); st=arg("--status","success"); 
+        lp=arg("--log","trakt_run.log"); st=arg("--status","success");
         try: update_trakt(lp,st)
         except Exception as e: _dbg("fatal trakt",e); overall_badges("Trakt","failure")
     elif mode=="tv":
-        lp=arg("--log","tv_epg.log"); st=arg("--status","success"); 
+        lp=arg("--log","tv_epg.log"); st=arg("--status","success");
         try: update_tv(lp,st)
         except Exception as e: _dbg("fatal tv",e); overall_badges("Live TV","failure")
     else: sys.exit(2)
