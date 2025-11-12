@@ -21,12 +21,12 @@ def write(p,t):
     with io.open(p,"w",encoding="utf-8") as f: f.write(t)
 
 def repl_block(md,tag,body):
-    a=f"<!-- {tag} -->"; b=f"<!-- /{tag} -->"; block=f"{a}\n{body}\n{b}"
+    a=f""; b=f""; block=f"{a}\n{body}\n{b}"
     pat=re.compile(re.escape(a)+r".*?"+re.escape(b),re.S)
     return pat.sub(block,md) if pat.search(md) else (md+("\n" if not md.endswith("\n") else "")+block+"\n")
 
 def read_block(md,tag):
-    a,f=f"<!-- {tag} -->",f"<!-- /{tag} -->"; s,e=md.find(a),md.find(f);
+    a,f=f"",f""; s,e=md.find(a),md.find(f);
     return "" if (s==-1 or e==-1 or e<s) else md[s+len(a):e].strip()
 
 ANSI=re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x1b]*\x1b\\|\x1b\][^\x07]*\x07")
@@ -36,7 +36,7 @@ IT_MONTH=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic
 def ts_now_it():
     z=datetime.now(ZoneInfo("Europe/Rome")); d=f"{z.day:02d} {IT_MONTH[z.month-1]} {z.year}"; h=z.hour%12 or 12; m=f"{z.minute:02d}"; ap="am" if z.hour<12 else "pm"; return f"{d} {h}:{m} {ap}"
 
-def shield(label,val,color): return f"https://img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
+def shield(label,val,color): return f"https.img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
 def badgen_run(ts,color): return f"https://badgen.net/badge/Run/{quote(ts,safe='')}/{quote(color,safe='')}"
 def enc_badge(u,href): return f"[![X]({u})]({href})" if href else f"![X]({u})"
 
@@ -63,18 +63,18 @@ def find_job_and_step(owner,repo,run_id,prefer=("trakt","trakt lists","trakt_lis
     if not job: job=jobs[0] if jobs else None
     if not job: return None,None,None
     steps=job.get("steps") or []; idx=None
-    for i,s in enumerate(steps,1):
+    for i,s in reversed(list(enumerate(steps,1))):
         nm=(s.get("name") or "").strip()
         if nm in step_exact: idx=i; break
     if not idx:
-        for i,s in enumerate(steps,1):
+        for i,s in reversed(list(enumerate(steps,1))):
             nm=(s.get("name") or "").strip()
             if any(nm.startswith(p) for p in step_prefix): idx=i; break
     if not idx: idx=1
     return job.get("id"),idx,job
 
 def fetch_job_log(owner,repo,job_id):
-    r=http_get(f"https://api.github.com/repos/{owner}/{repo}/actions/jobs/{job_id}/logs",gh_headers({"Accept":"*/*"}))
+    r=http_get(f"https.api.github.com/repos/{owner}/{repo}/actions/jobs/{job_id}/logs",gh_headers({"Accept":"*/*"}))
     if not r or not r.content: return ""
     b=r.content
     try:
@@ -184,9 +184,9 @@ def update_trakt(log_path,status="success"):
     md=repl_block(md,"DASH:TRAKT",dash)
     latest="<br>\n".join(["🍿 "+t for t in titles]) if titles else ""
     md=repl_block(md,"TRAKT:OUTPUT",latest)
-    sent=f"<!-- TRAKT_RUN:{run_id} -->" if run_id else ""
+    sent=f"" if run_id else ""
     prev=read_block(md,"TRAKT:HISTORY")
-    if run_id: prev=re.sub(r'(?ms)^.*?<!-- TRAKT_RUN:'+re.escape(run_id)+r' -->.*?(?:\n(?!\s*!\[).*)*','',prev).strip()
+    if run_id: prev=re.sub(r'(?ms)^.*?.*?(?:\n(?!\s*!\[).*)*','',prev).strip()
     chunk=(" ".join([enc_badge(nm,href_movies),enc_badge(tk,href_token),enc_badge(runb,href_run),sent]).strip()+(("""<br>\n"""+latest) if latest else ""))
     parts=[x for x in (prev or "").split("\n\n") if x.strip()]
     new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
@@ -239,7 +239,7 @@ def update_tv(log_path,status="success"):
             gd=first_line(raw,("d_epg.xml ->",)); sd=nearest_group_start_before(raw,gd) if gd else None; ln_d=(gd-sd+1) if (gd and sd) else None
             if ln_m is not None and ln_m<1: ln_m=1
             if ln_d is not None and ln_d<1: ln_d=1
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
+    base=f"https.github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
