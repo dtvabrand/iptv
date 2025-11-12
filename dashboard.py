@@ -77,8 +77,7 @@ def find_tv_job_and_step(owner,repo,run_id):
     jobs=list_jobs(owner,repo,run_id)
     job=next((j for j in jobs if "build epg" in (j.get("name","").lower())),None) or (jobs[0] if jobs else None)
     if not job: return None,None
-    steps=job.get("steps") or []
-    idx=None
+    steps=job.get("steps") or []; idx=None
     for i,s in enumerate(steps,1):
         if (s.get("name") or "").strip()=="Build EPG": idx=i; break
     if not idx: idx=int(os.getenv("TV_STEP_IDX","5") or "5")
@@ -109,6 +108,12 @@ def first_line(raw,needles):
         for n in needles:
             if n in ln: return i
     return None
+def first_line_re(raw,pat):
+    if not raw: return None
+    rg=re.compile(pat)
+    for i,ln in enumerate(clean_lines(raw),1):
+        if rg.search(ln): return i
+    return None
 
 def parse_titles(txt):
     titles=[]
@@ -130,7 +135,7 @@ def _extract_badge_markup(line,svc):
 
 def _latest_badge_markup(hist,svc):
     if not hist: return ""
-    for l in [x.strip() for x in hist.splitlines() if x.strip()]:
+    for l in [x.strip() for x in re.split(r'<br>\s*',hist) if x.strip()]:
         b=_extract_badge_markup(l,svc)
         if b: return b
     return ""
@@ -153,8 +158,13 @@ def overall_badges(update_service,status):
     for s in SERV:
         if s!=update_service:
             mk=_latest_badge_markup(hist,s)
-            if mk: hrefs[s]=re.search(r'\]\(([^)]+)\)$',mk) and re.search(r'\]\(([^)]+)\)$',mk).group(1) or ""; msgs[s]=re.search(r'message=([^&]+)',mk) and unquote(re.search(r'message=([^&]+)',mk).group(1).replace("+"," ")) or msgs[s]; cols[s]=re.search(r'color=([^&]+)',mk) and unquote(re.search(r'color=([^&]+)',mk).group(1)) or cols[s]
-            elif s in cur: msgs[s],cols[s],hrefs[s]=cur[s]
+            if mk:
+                m_href=re.search(r'\]\(([^)]+)\)$',mk); m_msg=re.search(r'message=([^&]+)',mk); m_col=re.search(r'color=([^&]+)',mk)
+                hrefs[s]=m_href.group(1) if m_href else ""
+                msgs[s]=unquote((m_msg.group(1) if m_msg else "pending%2C%20%E2%80%94").replace("+"," "))
+                cols[s]=unquote((m_col.group(1) if m_col else COL["date"]))
+            elif s in cur:
+                msgs[s],cols[s],hrefs[s]=cur[s]
     msgs[update_service]=f"{evt}, {stamp}"
     cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else COL["date"])
     hrefs[update_service]=base or hrefs.get(update_service,"")
@@ -163,14 +173,14 @@ def overall_badges(update_service,status):
     md=repl_block(md,"OVERALL:BADGES",row)
     today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
     tag=f"<!-- SESSION:{key} -->"
-    hist_lines=[l.strip() for l in read_block(md,"OVERALL:HISTORY").splitlines() if l.strip() and set(l.strip())-set("<>/br ")]
-    updated=False
-    for i,l in enumerate(hist_lines):
-        if l.endswith(tag):
-            hist_lines[i]=(row+" "+tag).strip(); updated=True; break
-    if not updated: hist_lines=[(row+" "+tag).strip()]+hist_lines
-    hist_lines=hist_lines[:30]
-    md=repl_block(md,"OVERALL:HISTORY","<br>\n".join(hist_lines).strip()); write(RD,md)
+    hist_raw=read_block(md,"OVERALL:HISTORY")
+    entries=[x.strip() for x in re.split(r'<br>\s*',hist_raw) if x.strip()]
+    replaced=False
+    for i,e in enumerate(entries):
+        if e.endswith(tag): entries[i]=row+" "+tag; replaced=True; break
+    if not replaced: entries=[row+" "+tag]+entries
+    entries=entries[:30]
+    md=repl_block(md,"OVERALL:HISTORY","<br>\n".join(entries)); write(RD,md)
 
 def update_trakt(log_path,status="success"):
     md=read(RD); txt=read(log_path,""); titles=parse_titles(txt); new_count=len(titles)
@@ -228,7 +238,7 @@ def parse_tv_table_and_badges(log_path):
     for site in sorted(site_counts.keys()):
         s=site_counts[site]; st="✅"
         if s["fail"]: st="❌"
-        elif s["warn"]: st="⚠️"
+        elif s["warn"] and not s["fail"]: st="⚠️"
         lines.append(f"| {site} | {s['M']} | {s['D']} | {st} |")
         if s["warn"]: notes.extend(sorted(s["warn"]))
         if s["fail"]: fails.append(site)
@@ -252,7 +262,7 @@ def update_tv(log_path,status="success"):
     if owner and repo and run_id and job_id:
         raw=fetch_job_log(owner,repo,job_id)
         if raw:
-            im=first_line(raw,("m_epg.xml ->",)); idl=first_line(raw,("d_epg.xml ->",))
+            im=first_line_re(raw,r'^m_epg\.xml\s*->\s*\d+\s+channels\s*$'); idl=first_line_re(raw,r'^d_epg\.xml\s*->\s*\d+\s+channels\s*$')
             gs_m=nearest_group_start_before(raw,im) if im else None; gs_d=nearest_group_start_before(raw,idl) if idl else None
             ln_m=(im-gs_m+1) if (im and gs_m) else None; ln_d=(idl-gs_d+1) if (idl and gs_d) else None
             if ln_m is not None and ln_m<1: ln_m=1
