@@ -19,13 +19,12 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: epg-pages
-  cancel-in-progress: true
-
 jobs:
   build_epg:
     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    concurrency:
+      group: epg-pages
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 35
     outputs:
