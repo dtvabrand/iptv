@@ -4,7 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 RD=os.getenv("README_PATH","README.md"); DBG=os.getenv("DEBUG_DASH","0").strip() not in ("","0","false","False","no","No")
-COL={"ok":"2cc36b","warn":"f1d70f","token":"34a6db","date":"95a5a6","run":"f1d70f","err":"e74c3c"}
+COL={"ok":"2cc36b","warn":"f1d70f","token":"34a6db","date":"95a5a6","run":"f1d70f","err":"e74c3c","a":"f1d70f"}
 
 def _dbg(*a):
     if DBG:
@@ -154,7 +154,8 @@ def update_trakt(log_path,status="success"):
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
     nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color)
-    run_color=COL["ok"] if status=="success" else COL["err"]; runb=shield("Run",ts_now_it(),run_color)
+    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+    run_color=COL["ok"] if status=="success" else COL["err"]; runb=shield("Run",msg,run_color)
     base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_movies=(f"{base}/job/{job_id}#step:{step_idx}:{ln_movies}" if (base and job_id and step_idx and ln_movies) else base)
     href_token=(f"{base}/job/{job_id}#step:{step_idx}:{ln_token}" if (base and job_id and step_idx and ln_token) else base)
@@ -174,7 +175,8 @@ def update_trakt(log_path,status="success"):
 def parse_tv_table_and_badges(log_path):
     raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
     if not raw:
-        hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(shield('Run',ts_now_it(),COL['run']), '')}"
+        ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+        hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
         head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
         return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb,"raw":raw}
     m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
@@ -202,7 +204,8 @@ def parse_tv_table_and_badges(log_path):
     if notes:
         uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
     if fails: extra.append(f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}")
-    hb=f"{shield('M',M,COL['a'])} {shield('D',D,COL['a'])} {shield('Run',ts_now_it(),COL['run'])}"
+    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+    hb=f"{shield('M',M,COL['a'])} {shield('D',D,COL['a'])} {shield('Run',msg,COL['run'])}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"raw":raw}
 
 def _best_epg_line(raw,label):
@@ -216,7 +219,7 @@ def update_tv(log_path,status="success"):
     owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
     job_id=os.getenv("TV_JOB_ID","").strip(); step_idx=os.getenv("TV_STEP_IDX","5").strip()
     if not job_id or not step_idx:
-        j,s=find_tv_job_and_step(owner,repo,run_id); 
+        j,s=find_tv_job_and_step(owner,repo,run_id)
         if j: job_id=str(j)
         if s: step_idx=str(s)
     ln_m=ln_d=None
@@ -233,7 +236,8 @@ def update_tv(log_path,status="success"):
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
     s_m=shield('M',tv['M'],COL['a']); s_d=shield('D',tv['D'],COL['a'])
-    run_color=COL["ok"] if status=="success" else COL["err"]; s_run=shield('Run',ts_now_it(),run_color)
+    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+    run_color=COL["ok"] if status=="success" else COL["err"]; s_run=shield('Run',msg,run_color)
     dash=" ".join([enc_badge(s_m,href_m),enc_badge(s_d,href_d),enc_badge(s_run,href_run)])
     md=repl_block(md,"DASH:TV",dash)
     md=repl_block(md,"TV:OUTPUT",tv["table"]+("\n\n"+tv["notes"] if tv["notes"] else ""))
