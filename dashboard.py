@@ -4,8 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 RD=os.getenv("README_PATH","README.md"); DBG=os.getenv("DEBUG_DASH","0").strip() not in ("","0","false","False","no","No")
-COL={"ok":"2ecc71","warn":"f39c12","token":"3498db","date":"95a5a6","run":"f1c40f","err":"e74c3c","a":"27ae60"}
-SERV=("Trakt","Live TV")
+COL={"ok":"2cc36b","warn":"f1d70f","token":"34a6db","date":"95a5a6","run":"f1d70f","err":"e74c3c"}
 
 def _dbg(*a):
     if DBG:
@@ -37,7 +36,6 @@ def ts_now_it():
     z=datetime.now(ZoneInfo("Europe/Rome")); d=f"{z.day} {IT_MONTH[z.month-1]} {z.year}"; h=z.hour%12 or 12; m=f"{z.minute:02d}"; ap="am" if z.hour<12 else "pm"; return f"{d} {h}:{m} {ap}"
 
 def shield(label,val,color): return f"https://img.shields.io/badge/{quote(label,safe='')}-{quote(str(val),safe='')}-{quote(color,safe='')}?cacheSeconds=300"
-def badgen_run(ts,color): return f"https://badgen.net/badge/Run/{quote(ts,safe='')}/{quote(color,safe='')}"
 def enc_badge(u,href): return f"[![X]({u})]({href})" if href else f"![X]({u})"
 
 def gh_headers(extra=None):
@@ -139,59 +137,6 @@ def parse_titles(txt):
             if t and t not in titles: titles.append(t)
     return titles
 
-def _extract_badge_markup(line,svc):
-    m=re.search(r'(\[!\['+re.escape(svc)+r'\]\([^)]+\)\]\([^)]+\)|!\['+re.escape(svc)+r'\]\([^)]+\))',line)
-    return m.group(1) if m else ""
-
-def _latest_badge_markup(hist,svc):
-    if not hist: return ""
-    for l in [x.strip() for x in re.split(r'<br>\s*',hist) if x.strip()]:
-        b=_extract_badge_markup(l,svc)
-        if b: return b
-    return ""
-
-def overall_badges(update_service,status):
-    md=read(RD); badges=read_block(md,"OVERALL:BADGES"); hist=read_block(md,"OVERALL:HISTORY")
-    evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); stamp=ts_now_it()
-    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=(os.getenv("RUN_ID") or "").strip()
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
-    cols={s:COL["date"] for s in SERV}; msgs={s:"pending, —" for s in SERV}; hrefs={s:"" for s in SERV}
-    def parse_current(b):
-        out={}
-        for s in SERV:
-            m=re.search(r'\[!\['+re.escape(s)+r'\]\((https://img\.shields\.io/[^)]+)\)\]\(([^)]*)\)',b or "")
-            if m:
-                u,href=m.group(1),m.group(2); q=dict(x.split("=",1) for x in (u.split("?",1)[1] if "?" in u else "").split("&") if "=" in x)
-                out[s]=(unquote((q.get("message") or "").replace("+"," ")),unquote(q.get("color") or ""),href)
-        return out
-    cur=parse_current(badges)
-    for s in SERV:
-        if s!=update_service:
-            mk=_latest_badge_markup(hist,s)
-            if mk:
-                m_href=re.search(r'\]\(([^)]+)\)$',mk); m_msg=re.search(r'message=([^&]+)',mk); m_col=re.search(r'color=([^&]+)',mk)
-                hrefs[s]=m_href.group(1) if m_href else ""
-                msgs[s]=unquote((m_msg.group(1) if m_msg else "pending%2C%20%E2%80%94").replace("+"," "))
-                cols[s]=unquote((m_col.group(1) if m_col else COL["date"]))
-            elif s in cur:
-                msgs[s],cols[s],hrefs[s]=cur[s]
-    msgs[update_service]=f"{evt}, {stamp}"
-    cols[update_service]=COL["ok"] if status=="success" else (COL["err"] if status=="failure" else "95a5a6")
-    hrefs[update_service]=base or hrefs.get(update_service,"")
-    def img(s): return f"https://img.shields.io/static/v1?label={quote(s,safe='')}&message={quote(msgs[s],safe='')}&color={quote(cols[s],safe='')}&cacheSeconds=300"
-    row=" ".join((f"[![{s}]({img(s)})]({hrefs.get(s,'')})" if hrefs.get(s) else f"![{s}]({img(s)})") for s in SERV)
-    md=repl_block(md,"OVERALL:BADGES",row)
-    today=datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d"); key=f"dispatch:{run_id}" if (evt=="workflow_dispatch" and run_id) else (f"cron:{today}" if evt=="cron" else f"event:{today}")
-    tag=f"<!-- SESSION:{key} -->"
-    hist_raw=read_block(md,"OVERALL:HISTORY")
-    entries=[x.strip() for x in re.split(r'<br>\s*',hist_raw) if x.strip()]
-    replaced=False
-    for i,e in enumerate(entries):
-        if e.endswith(tag): entries[i]=row+" "+tag; replaced=True; break
-    if not replaced: entries=[row+" "+tag]+entries
-    entries=entries[:30]
-    md=repl_block(md,"OVERALL:HISTORY","<br>\n".join(entries)); write(RD,md)
-
 def update_trakt(log_path,status="success"):
     md=read(RD); txt=read(log_path,""); titles=parse_titles(txt); new_count=len(titles)
     err=("🧩 Need new refresh token!" in txt); refreshed=("🔄 Trakt token refresh completed" in txt); valid=("🔐 Trakt token valid" in txt)
@@ -208,7 +153,8 @@ def update_trakt(log_path,status="success"):
             gt=first_line(raw,t_needles) if t_needles else None; st=nearest_group_start_before(raw,gt) if gt else None; ln_token=(gt-st+1) if (gt and st) else None
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
-    nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color); runb=badgen_run(ts_now_it(),COL["run"])
+    nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color)
+    run_color=COL["ok"] if status=="success" else COL["err"]; runb=shield("Run",ts_now_it(),run_color)
     base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
     href_movies=(f"{base}/job/{job_id}#step:{step_idx}:{ln_movies}" if (base and job_id and step_idx and ln_movies) else base)
     href_token=(f"{base}/job/{job_id}#step:{step_idx}:{ln_token}" if (base and job_id and step_idx and ln_token) else base)
@@ -224,12 +170,11 @@ def update_trakt(log_path,status="success"):
     parts=[x for x in (prev or "").split("\n\n") if x.strip()]
     new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
     md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
-    overall_badges("Trakt","failure" if err else ("success" if (refreshed or valid) else "neutral"))
 
 def parse_tv_table_and_badges(log_path):
     raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
     if not raw:
-        hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(badgen_run(ts_now_it(),COL['run']), '')}"
+        hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(shield('Run',ts_now_it(),COL['run']), '')}"
         head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
         return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb,"raw":raw}
     m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
@@ -257,7 +202,7 @@ def parse_tv_table_and_badges(log_path):
     if notes:
         uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
     if fails: extra.append(f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}")
-    hb=f"{shield('M',M,COL['a'])} {shield('D',D,COL['a'])} {badgen_run(ts_now_it(),COL['run'])}"
+    hb=f"{shield('M',M,COL['a'])} {shield('D',D,COL['a'])} {shield('Run',ts_now_it(),COL['run'])}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"raw":raw}
 
 def _best_epg_line(raw,label):
@@ -287,15 +232,15 @@ def update_tv(log_path,status="success"):
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
-    s_m=shield('M',tv['M'],COL['a']); s_d=shield('D',tv['D'],COL['a']); s_run=badgen_run(ts_now_it(),COL['run'])
+    s_m=shield('M',tv['M'],COL['a']); s_d=shield('D',tv['D'],COL['a'])
+    run_color=COL["ok"] if status=="success" else COL["err"]; s_run=shield('Run',ts_now_it(),run_color)
     dash=" ".join([enc_badge(s_m,href_m),enc_badge(s_d,href_d),enc_badge(s_run,href_run)])
     md=repl_block(md,"DASH:TV",dash)
     md=repl_block(md,"TV:OUTPUT",tv["table"]+("\n\n"+tv["notes"] if tv["notes"] else ""))
     hist_badges=f"{enc_badge(s_m, href_m)} {enc_badge(s_d, href_d)} {enc_badge(s_run, href_run)}"
     prev=read_block(md,"TV:HISTORY"); chunk=hist_badges + (("<br>\n"+tv["notes"]) if tv["notes"] else ""); parts=[x for x in (prev or "").split("\n\n") if x.strip()]
     new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
-    md=repl_block(md,"TV:HISTORY",new_hist)
-    write(RD,md); overall_badges("Live TV","success" if status=="success" else "failure")
+    md=repl_block(md,"TV:HISTORY",new_hist); write(RD,md)
 
 def main():
     if len(sys.argv)<2: print("Usage:\n  dashboard.py trakt --log trakt_run.log [--status success|failure]\n  dashboard.py tv --log tv_epg.log [--status success|failure]"); sys.exit(1)
@@ -303,11 +248,11 @@ def main():
     if mode=="trakt":
         lp=arg("--log","trakt_run.log"); st=arg("--status","success");
         try: update_trakt(lp,st)
-        except Exception as e: _dbg("fatal trakt",e); overall_badges("Trakt","failure")
+        except Exception as e: _dbg("fatal trakt",e)
     elif mode=="tv":
         lp=arg("--log","tv_epg.log"); st=arg("--status","success");
         try: update_tv(lp,st)
-        except Exception as e: _dbg("fatal tv",e); overall_badges("Live TV","failure")
+        except Exception as e: _dbg("fatal tv",e)
     else: sys.exit(2)
     msg=os.getenv("DASH_COMMIT_MSG","").strip()
     if msg:
