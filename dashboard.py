@@ -4,7 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 RD=os.getenv("README_PATH","README.md"); DBG=os.getenv("DEBUG_DASH","0").strip() not in ("","0","false","False","no","No")
-COL={"ok":"2cc36b","warn":"f1d70f","token":"34a6db","date":"95a5a6","run":"f1d70f","err":"e74c3c","a":"f1d70f"}
+COL={"ok":"2cc36b","warn":"f1d70f","token":"34a6db","date":"95a5a6","run":"f1d70f","err":"e74c3c"}
 
 def _dbg(*a):
     if DBG:
