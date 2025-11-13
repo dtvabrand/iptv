@@ -153,7 +153,7 @@ def update_trakt(log_path,status="success"):
             gt=first_line(raw,t_needles) if t_needles else None; st=nearest_group_start_before(raw,gt) if gt else None; ln_token=(gt-st+1) if (gt and st) else None
             if ln_movies is not None and ln_movies<1: ln_movies=1
             if ln_token is not None and ln_token<1: ln_token=1
-    nm=shield("New Movie",new_count,COL["a"]); tk=shield("Token",token_state,token_color)
+    nm=shield("New Movie",new_count,COL["warn"]); tk=shield("Token",token_state,token_color)
     ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
     run_color=COL["ok"] if status=="success" else COL["err"]; runb=shield("Run",msg,run_color)
     base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
@@ -176,7 +176,7 @@ def parse_tv_table_and_badges(log_path):
     raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
     if not raw:
         ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
-        hb=f"{enc_badge(shield('M','0',COL['a']), '')} {enc_badge(shield('D','0',COL['a']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
+        hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
         head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
         return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb,"raw":raw}
     m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
@@ -205,7 +205,7 @@ def parse_tv_table_and_badges(log_path):
         uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
     if fails: extra.append(f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}")
     ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
-    hb=f"{shield('M',M,COL['a'])} {shield('D',D,COL['a'])} {shield('Run',msg,COL['run'])}"
+    hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"raw":raw}
 
 def _best_epg_line(raw,label):
@@ -235,7 +235,7 @@ def update_tv(log_path,status="success"):
     href_m=(f"{base}/job/{job_id}#step:{step_idx}:{ln_m}" if (base and job_id and step_idx and ln_m) else base)
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
-    s_m=shield('M',tv['M'],COL['a']); s_d=shield('D',tv['D'],COL['a'])
+    s_m=shield('M',tv['M'],COL['warn']); s_d=shield('D',tv['D'],COL['warn'])
     ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
     run_color=COL["ok"] if status=="success" else COL["err"]; s_run=shield('Run',msg,run_color)
     dash=" ".join([enc_badge(s_m,href_m),enc_badge(s_d,href_d),enc_badge(s_run,href_run)])
