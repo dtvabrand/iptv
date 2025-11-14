@@ -45,9 +45,6 @@ SITES=[
 ]
 
 QIDS = [
-    ("Trap House", "Q125388230"),
-    ("Bull Run", "Q133849169"),
-    ("Bunny", "Q136773157"),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
@@ -57,6 +54,8 @@ QIDS = [
     ("Bad Men Must Bleed", "Q136108816"),
     ("Black Heat", "Q136654944"),
     ("Both Eyes Open", "Q131870423"),
+    ("Bull Run", "Q133849169"),
+    ("Bunny", "Q136773157"),
     ("California King", "Q134136884"),
     ("Dreaming of You", "Q136654956"),
     ("Et Tu", "Q135484808"),
@@ -100,6 +99,7 @@ QIDS = [
     ("The Workout", "Q136655068"),
     ("To Die Alone", "Q136654935"),
     ("Tom and Jerry: Forbidden Compass", "Q135432802"),
+    ("Trap House", "Q125388230"),
     ("Uppercut", "Q136654989"),
     ("Violent Ends", "Q136673339"),
     ("Watchmen: Chapter I", "Q129485956"),
