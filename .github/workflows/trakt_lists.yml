@@ -98,7 +98,7 @@ jobs:
           retention-days: 7
 
   update_readme:
-    if: ${{ always() && (github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true') }}
+    if: ${{ always() }}
     needs: trakt_lists
     runs-on: ubuntu-latest    
     env:
@@ -111,7 +111,7 @@ jobs:
       
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
@@ -133,16 +133,18 @@ jobs:
           path: .
 
       - name: Update README (trakt section only)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true') }}
         run: |
           python dashboard.py trakt --log "$TRAKT_LOG"
 
-      - name: Commit README and trakt_lists.py
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          MSG: ${{ env.DASH_COMMIT_MSG }}
+      - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add README.md trakt_lists.py
-          git commit -m "$MSG" || echo "No changes"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            git add trakt_lists.py
+          else
+            git add README.md trakt_lists.py
+          fi
+          git commit -m "$DASH_COMMIT_MSG" || echo "No changes"
           git push || true
