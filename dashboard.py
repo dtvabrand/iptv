@@ -188,7 +188,7 @@ def parse_tv_table_and_badges(log_path):
         s=sc.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
         if g=="main": s["M"]+=n
         else: s["D"]+=n
-    for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
+    for site,chan,progs in re.findall(r"\]\s+([a-z0-9\.\-]+)\s*\([^)]+\)\s*-\s*(.*?)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
         cname=re.sub(r"\s+"," ",chan.strip()); lst=chs.setdefault(site,[]); cname not in lst and lst.append(cname)
         if site in sc and int(progs)==0: sc[site]["warn"].add(cname)
     for site in sc:
