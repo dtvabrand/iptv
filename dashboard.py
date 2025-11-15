@@ -175,39 +175,35 @@ def update_trakt(log_path,status="success"):
     md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
 
 def parse_tv_table_and_badges(log_path):
-    raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]
+    raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]; sc={}; chs={}
     if not raw:
-        ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
-        hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
-        head="| Site | M | D | Status |\n|---|---:|---:|---|\n"
-        return {"M":"0","D":"0","table":head,"notes":"","hist_badges":hb,"raw":raw}
+        ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
+        msg=f"{evt}, {ts}"; hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
+        return {"M":"0","D":"0","table":"<table></table>","notes":"","hist_badges":hb,"raw":raw}
     m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
     d=re.search(r"d_epg\.xml\s*->\s*(\d+)\s+channels",raw); D=d.group(1) if d else "0"
-    for g,site,n in re.findall(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels",raw): rows.append((g,site,int(n)))
-    site_counts={}
+    for g,site,n in re.findall(r">\s*(main|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels",raw):
+        rows.append((g,site,int(n)))
     for g,site,n in rows:
-        s=site_counts.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
-        if g=="main": s["M"]+=n
-        else: s["D"]+=n
-    for site in list(site_counts.keys()):
-        if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): s=site_counts[site]; s["fail"]=True
-    for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{{2}}\s+\d{{1,2}},\s*\d{{4}}\s*\((\d+)\s+programs\)",raw,re.I):
-        if site in site_counts and int(progs)==0: site_counts[site]["warn"].add(re.sub(r"\s+"," ",chan.strip()))
-    lines=[]
-    for site in sorted(site_counts.keys()):
-        s=site_counts[site]; st="✅"
-        if s["fail"]: st="❌"
-        elif s["warn"] and not s["fail"]: st="⚠️"
-        lines.append(f"| {site} | {s['M']} | {s['D']} | {st} |")
-        if s["warn"]: notes.extend(sorted(s["warn"]))
-        if s["fail"]: fails.append(site)
-    head="| Site | M | D | Status |\n|---|---:|---:|---|\n"; table=head+("\n".join(lines) if lines else "")
-    extra=[]
-    if notes:
-        uniq=[]; [uniq.append(x) for x in notes if x not in uniq]; extra.append(f"⚠️ Notes\n{len(uniq)} channels without EPG: {', '.join(uniq)}")
-    if fails: extra.append(f"❌ Failures\n{len(set(fails))} site(s) error: {', '.join(sorted(set(fails)))}")
-    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
-    hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
+        s=sc.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
+        (s["M"]:=s["M"]+n) if g=="main" else (s["D"]:=s["D"]+n)
+    for site,chan,progs in re.findall(r"([a-z0-9\.\-]+).*?-\s*([a-z0-9\-\s]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
+        cname=re.sub(r"\s+"," ",chan.strip()); lst=chs.setdefault(site,[]); cname not in lst and lst.append(cname)
+        if site in sc and int(progs)==0: sc[site]["warn"].add(cname)
+    for site in sc:
+        if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): sc[site]["fail"]=True
+    rows_html=[]
+    for site in sorted(sc):
+        s=sc[site]; st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
+        cell=(f"<details><summary>{site}</summary>\n"+ "<br>".join(chs.get(site,[])) +"\n</details>") if site in chs else site
+        rows_html.append(f"<tr><td>{cell}</td><td align=\"right\">{s['M']}</td><td align=\"right\">{s['D']}</td><td>{st}</td></tr>")
+        notes.extend(sorted(s["warn"])); s["fail"] and fails.append(site)
+    table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
+    extra=[]; uniq=[]; [uniq.append(x) for x in notes if x not in uniq]
+    if uniq: extra.append(f"⚠️ Notes<br>{len(uniq)} channels without EPG: {', '.join(uniq)}")
+    if fails: extra.append(f"❌ Failures<br>{len(set(fails))} site(s): {', '.join(sorted(set(fails)))}")
+    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
+    msg=f"{evt}, {ts}"; hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"raw":raw}
 
 def _best_epg_line(raw,label):
