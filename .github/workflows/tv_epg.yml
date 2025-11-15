@@ -219,13 +219,6 @@ PY
           chmod +x "$RUNNER_TEMP/pipeline.sh"
           bash "$RUNNER_TEMP/pipeline.sh" 2>&1 | tee "$GITHUB_WORKSPACE/tv_epg.log"
 
-        run: |
-          set -euo pipefail
-          echo "job_id=${{ github.job_id }}" >> "$GITHUB_OUTPUT"
-          printf '%s\n' "$PIPELINE" > "$RUNNER_TEMP/pipeline.sh"
-          chmod +x "$RUNNER_TEMP/pipeline.sh"
-          bash "$RUNNER_TEMP/pipeline.sh" 2>&1 | tee "$GITHUB_WORKSPACE/tv_epg.log"
-
       - name: Upload log artifact
         uses: actions/upload-artifact@v4
         with:
@@ -299,6 +292,7 @@ PY
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Prepare site (reuse existing EPG from Pages)
         shell: bash
         run: |
