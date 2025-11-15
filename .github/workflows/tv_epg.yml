@@ -94,7 +94,7 @@ jobs:
                                            encoding="utf-8",xml_declaration=True)
                 meta[site]={"M":sorted(m_ids),"D":sorted(d_ids)}
             for site,info in sorted(meta.items()):
-                if info["M"]: print(f"> main {site} : {len(info['M'])} channels")
+                if info["M"]: print(f"> m {site} : {len(info['M'])} channels")
                 if info["D"]: print(f"> d {site} : {len(info['D'])} channels")
             with open(os.path.join(outdir,"site_meta.json"),"w",encoding="utf-8") as f:
                 json.dump(meta,f,ensure_ascii=False)
@@ -161,48 +161,33 @@ jobs:
             def ensure_empty(outp):
                 with open(outp,"w",encoding="utf-8") as f:
                     f.write('<?xml version="1.0" encoding="UTF-8"?>\n<tv></tv>')
-            id_to_sid={}
-            for pth in files:
-                try: r=ET.parse(pth).getroot()
-                except: continue
-                for c in r.findall("channel"):
-                    cid=c.get("id",""); sid=(c.get("site_id") or "").strip()
-                    if cid and sid and cid not in id_to_sid: id_to_sid[cid]=sid
-            def build_epg(target_ids,outp):
-                if not files or not target_ids:
-                    ensure_empty(outp); return
-                t0=None; r0=None; chs=set(); progs=set()
-                for pth in files:
-                    try: t=ET.parse(pth); r=t.getroot()
+            if not files:
+                ensure_empty(os.path.join(gw,"m_epg.xml"))
+                ensure_empty(os.path.join(gw,"d_epg.xml"))
+            else:
+                t0=ET.parse(files[0]); r0=t0.getroot()
+                chs=set(c.get("id","") for c in r0.findall("channel"))
+                progs=set((p.get("channel",""), p.get("start","")) for p in r0.findall("programme"))
+                for pth in files[1:]:
+                    try: r=ET.parse(pth).getroot()
                     except: continue
-                    if t0 is None:
-                        t0=t; r0=r
-                        for el in list(r0): r0.remove(el)
                     for c in r.findall("channel"):
-                        cid=c.get("id",""); sid=(c.get("site_id") or "").strip()
-                        if not cid or sid not in target_ids: continue
-                        if cid not in chs:
+                        cid=c.get("id","")
+                        if cid and cid not in chs:
                             r0.append(c); chs.add(cid)
                     for pr in r.findall("programme"):
-                        ch=pr.get("channel","")
-                        if not ch: continue
-                        sid=id_to_sid.get(ch,"")
-                        if sid not in target_ids: continue
-                        k=(ch,pr.get("start",""))
+                        k=(pr.get("channel",""), pr.get("start",""))
                         if k not in progs:
                             r0.append(pr); progs.add(k)
-                if t0 is None:
-                    ensure_empty(outp); return
                 try: ET.indent(t0,space="  ",level=0)
                 except: pass
-                t0.write(outp,encoding="utf-8",xml_declaration=True)
-            build_epg(m_ids,os.path.join(gw,"m_epg.xml"))
-            build_epg(d_ids,os.path.join(gw,"d_epg.xml"))
+                out_m=os.path.join(gw,"m_epg.xml"); out_d=os.path.join(gw,"d_epg.xml")
+                t0.write(out_m,encoding="utf-8",xml_declaration=True)
+                t0.write(out_d,encoding="utf-8",xml_declaration=True)
+            print(f"m_epg.xml ->  {len(m_ids)} channels")
+            print(f"d_epg.xml ->  {len(d_ids)} channels")
             PY
             echo "::endgroup::"
-
-            echo "m_epg.xml ->  $(grep -c '<channel' "${GITHUB_WORKSPACE}/m_epg.xml") channels"
-            echo "d_epg.xml ->  $(grep -c '<channel' "${GITHUB_WORKSPACE}/d_epg.xml") channels"
 
             SITE="${OUTDIR}/site"
             mkdir -p "$SITE"
