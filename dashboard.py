@@ -194,8 +194,17 @@ def load_pretty_names():
             if k not in mp: mp[k]=disp
     return mp
 
+def load_site_channels():
+    pretty=load_pretty_names(); sites={}
+    for (site,sid),disp in pretty.items():
+        lst=sites.setdefault(site,[])
+        if disp not in lst: lst.append(disp)
+    for s in sites: sites[s]=sorted(sites[s])
+    return sites,pretty
+
 def parse_tv_table_and_badges(log_path):
-    raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]; sc={}; chs={}; pretty=load_pretty_names()
+    raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]; sc={}
+    site_ch,pretty=load_site_channels()
     if not raw:
         ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
         msg=f"{evt}, {ts}"; hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
@@ -208,20 +217,18 @@ def parse_tv_table_and_badges(log_path):
         s=sc.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
         if g=="main": s["M"]+=n
         else: s["D"]+=n
-    for site,chan,progs in re.findall(r"\]\s+([a-z0-9\.\-]+)\s*\([^)]+\)\s*-\s*(.*?)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
-        site_key=site.strip().lower()
-        sid=re.sub(r"\s+"," ",chan.strip())
-        disp=pretty.get((site_key,sid),sid)
-        lst=chs.setdefault(site,[])
-        if disp not in lst: lst.append(disp)
-        if site in sc and int(progs)==0: sc[site]["warn"].add(disp)
-    for site in sc:
+    for site,sid,progs in re.findall(r"\]\s+([a-z0-9\.\-]+)\s*\([^)]+\)\s*-\s*([a-z0-9\-\._]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
+        sk=site.strip().lower(); key=(sk,sid.strip())
+        disp=pretty.get(key,sid.strip())
+        if sk in sc and int(progs)==0: sc[sk]["warn"].add(disp)
+    for site in list(sc.keys()):
         if re.search(rf"FAIL\s+(main|d)\s+{re.escape(site)}",raw): sc[site]["fail"]=True
     rows_html=[]
-    for site in sorted(sc):
+    for site in sorted(sc.keys()):
         s=sc[site]
         st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
-        cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(chs.get(site,[])) +"\n</details>" if site in chs else site
+        ch_list=site_ch.get(site.lower(),[])
+        cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(ch_list) +"\n</details>" if ch_list else site
         rows_html.append(f"<tr><td>{cell}</td><td align=\"right\">{s['M']}</td><td align=\"right\">{s['D']}</td><td>{st}</td></tr>")
         notes.extend(sorted(s["warn"]))
         if s["fail"]: fails.append(site)
