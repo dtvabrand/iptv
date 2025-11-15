@@ -114,7 +114,7 @@ jobs:
             throttle(){ local lim="${PER_SITE_JOBS:-10}"; while [ "$(jobs -rp | wc -l)" -ge "$lim" ]; do wait -n || true; done; }
             retry_grab(){ local ch="$1" site="$2" out="$3" maxc="$4" tout="$5"
               echo "Grab $site -> $out (maxc=$maxc timeout=${tout}ms)"
-              try(){ npm run grab -- --channels="$ch" --days=7 --maxConnections="$maxc" --timeout="$tout" --output="$out" | filter_log; }
+              try(){ npm run grab -- --channels="$ch" --days=4 --maxConnections="$maxc" --timeout="$tout" --output="$out" | filter_log; }
               (try) || (sleep 2 && try) || (sleep 4 && try) || return 1; }
             run_block(){ local prefix="$1" outdir="$2"
               shopt -s nullglob
@@ -258,7 +258,6 @@ jobs:
 
       - name: Install deps
         run: |
-          python -m pip install --upgrade pip
           pip install requests
 
       - name: Download log artifact
