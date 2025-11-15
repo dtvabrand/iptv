@@ -64,7 +64,7 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
-[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678/job/55494061011#step:5:555) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678/job/55494061011#step:5:556) [![X](https://img.shields.io/badge/Run-workflow_dispatch%2C%2015%20nov%202025%209%3A26%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678)
+[![X](https://img.shields.io/badge/M-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831/job/55494657233#step:5:573) [![X](https://img.shields.io/badge/D-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831/job/55494657233#step:5:574) [![X](https://img.shields.io/badge/Run-workflow_dispatch%2C%2015%20nov%202025%209%3A50%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
@@ -88,6 +88,8 @@ ABC<br>ABC News Live<br>ACC Network<br>Boomerang<br>Bravo<br>CBS<br>E!<br>ESPN<b
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+[![X](https://img.shields.io/badge/M-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831/job/55494657233#step:5:573) [![X](https://img.shields.io/badge/D-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831/job/55494657233#step:5:574) [![X](https://img.shields.io/badge/Run-workflow_dispatch%2C%2015%20nov%202025%209%3A50%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395384831)
+
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678/job/55494061011#step:5:555) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678/job/55494061011#step:5:556) [![X](https://img.shields.io/badge/Run-workflow_dispatch%2C%2015%20nov%202025%209%3A26%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395120678)
 
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395058495/job/55493923826#step:5:555) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395058495/job/55493923826#step:5:556) [![X](https://img.shields.io/badge/Run-workflow_dispatch%2C%2015%20nov%202025%209%3A20%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19395058495)
