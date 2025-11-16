@@ -261,7 +261,7 @@ def parse_tv_table_and_badges(log_path):
         s=sc[site]; M_tot=s["M"]; D_tot=s["D"]; tval=times.get(site,"")
         entries=site_ch.get(site.lower(),[])
         if entries:
-            inner_rows=[]
+            inner_lines=[]
             for disp,tag,xml in entries:
                 dot="🟡" if tag=="B" else ("🔴" if tag=="M" else "🔵")
                 xml_key=(xml or "").lower()
@@ -271,15 +271,13 @@ def parse_tv_table_and_badges(log_path):
                     if lm: link_bits.append(f'<a href="{blob_base}/m_playlist.m3u8#L{lm}" style="text-decoration:none">м</a>')
                     if ld: link_bits.append(f'<a href="{blob_base}/d_playlist.m3u8#L{ld}" style="text-decoration:none">ᴅ</a>')
                 link_html=" ".join(link_bits)
-                ch_warn=(disp in s["warn"])
-                inner_rows.append(
-                    "<tr>"
-                    f"<td>{dot} {disp}</td>"
-                    f"<td style=\"text-align:right;white-space:nowrap\">{link_html}</td>"
-                    "</tr>"
+                inner_lines.append(
+                    '<div style="display:flex;justify-content:space-between">'
+                    f'<span>{dot} {disp}</span>'
+                    f'<span>{link_html}</span>'
+                    '</div>'
                 )
-            inner_table="<table><tbody>"+ "".join(inner_rows) +"</tbody></table>"
-            cell=f"<details><summary>{site}</summary>\n{inner_table}\n</details>"
+            cell=f"<details><summary>{site}</summary>\n"+ "\n".join(inner_lines) +"\n</details>"
         else:
             cell=site
         st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
