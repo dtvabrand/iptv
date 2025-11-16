@@ -225,10 +225,22 @@ def load_playlist_positions():
 def parse_tv_table_and_badges(log_path):
     raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]; sc={}
     site_ch,pretty=load_site_channels()
-    mp_m,mp_d=load_playlist_positions()
-    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""
-    branch=os.getenv("GIT_BRANCH","main").strip() or "main"
-    blob_base=f"https://github.com/{owner}/{repo}/blob/{branch}" if (owner and repo and branch) else ""
+    base_dir=os.path.dirname(os.path.abspath(__file__)); repo=os.getenv("GITHUB_REPOSITORY","").strip()
+    blob_base=f"https://github.com/{repo}/blob/main" if repo else ""
+    def _build_map(p):
+        mp={}
+        try:
+            with io.open(p,"r",encoding="utf-8",errors="replace") as f:
+                for i,line in enumerate(f,1):
+                    if "#EXTINF" not in line: continue
+                    m=re.search(r'tvg-id="([^"]+)"',line)
+                    if m:
+                        k=m.group(1).strip()
+                        if k and k not in mp: mp[k]=i
+        except: pass
+        return mp
+    mp_m=_build_map(os.path.join(base_dir,"m_playlist.m3u8")) if blob_base else {}
+    mp_d=_build_map(os.path.join(base_dir,"d_playlist.m3u8")) if blob_base else {}
     if not raw:
         ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
         hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
@@ -259,22 +271,17 @@ def parse_tv_table_and_badges(log_path):
             lines=[]
             for disp,tag,sid in entries:
                 dot="🟡" if tag=="B" else ("🔴" if tag=="M" else "🔵")
-                href=""
-                if blob_base and sid:
-                    if tag=="M":
-                        ln=mp_m.get(sid)
-                        if ln: href=f"{blob_base}/m_playlist.m3u8#L{ln}"
-                    elif tag=="D":
-                        ln=mp_d.get(sid)
-                        if ln: href=f"{blob_base}/d_playlist.m3u8#L{ln}"
-                    else:
-                        ln=mp_m.get(sid)
-                        if ln: href=f"{blob_base}/m_playlist.m3u8#L{ln}"
-                        else:
-                            ln=mp_d.get(sid)
-                            if ln: href=f"{blob_base}/d_playlist.m3u8#L{ln}"
-                label=f"{dot} {disp}"
-                lines.append(f'<a href="{href}">{label}</a>' if href else label)
+                href=None
+                ln=mp_m.get(sid)
+                if ln: href=f"{blob_base}/m_playlist.m3u8#L{ln}"
+                else:
+                    ln=mp_d.get(sid)
+                    if ln: href=f"{blob_base}/d_playlist.m3u8#L{ln}"
+                if href:
+                    line=f'{dot} <a href="{href}" style="text-decoration:none;color:inherit">{disp}</a>'
+                else:
+                    line=f"{dot} {disp}"
+                lines.append(line)
             cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(lines) +"\n</details>"
         else:
             cell=site
