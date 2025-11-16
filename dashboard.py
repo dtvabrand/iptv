@@ -268,8 +268,8 @@ def parse_tv_table_and_badges(log_path):
                 lm=mp_m.get(xml_key); ld=mp_d.get(xml_key)
                 links=[]
                 if blob_base:
-                    if lm: links.append(f'<span style="font-size:80%;">[<a href="{blob_base}/m_playlist.m3u8#L{lm}">M</a>]</span>')
-                    if ld: links.append(f'<span style="font-size:80%;">[<a href="{blob_base}/d_playlist.m3u8#L{ld}">D</a>]</span>')
+                    if lm: links.append(f'<sup>[<a href="{blob_base}/m_playlist.m3u8#L{lm}">M</a>]</sup>')
+                    if ld: links.append(f'<sup>[<a href="{blob_base}/d_playlist.m3u8#L{ld}">D</a>]</sup>')
                 suffix=("  "+"".join(links)) if links else ""
                 lines.append(f"{dot} {disp}{suffix}")
             cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(lines) +"\n</details>"
@@ -298,10 +298,16 @@ def _build_epg_seconds(owner,repo,run_id):
     jobs=list_jobs(owner,repo,run_id)
     if not jobs: return None
     job=next((j for j in jobs if "build epg" in (j.get("name") or "").lower()),None) or jobs[0]
-    dur=job.get("run_duration_ms")
+    steps=job.get("steps") or []
+    step=None
+    for s in steps:
+        if (s.get("name") or "").strip()=="Build EPG":
+            step=s; break
+    if not step: return None
+    dur=step.get("duration_ms")
     if isinstance(dur,int) and dur>=0:
         return int(dur/1000)
-    st=job.get("started_at"); et=job.get("completed_at")
+    st=step.get("started_at"); et=step.get("completed_at")
     if not (st and et): return None
     def _p(x):
         try:
