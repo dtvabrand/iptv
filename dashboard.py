@@ -117,8 +117,7 @@ def first_line_re(raw,pat):
 
 def last_line_re_excluding(raw,pat,exclude_subs=()):
     if not raw: return None
-    rg=re.compile(pat)
-    idx=None
+    rg=re.compile(pat); idx=None
     for i,ln in enumerate(clean_lines(raw),1):
         if rg.search(ln) and not any(x in ln for x in exclude_subs): idx=i
     return idx
@@ -175,12 +174,12 @@ def update_trakt(log_path,status="success"):
     md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
 
 def load_site_channels():
-    base=os.path.dirname(os.path.abspath(__file__)); sites={}; pretty={}
-    for fn in ("m_channels.xml","d_channels.xml"):
+    base=os.path.dirname(os.path.abspath(__file__)); pretty={}; kind={}
+    def load(fn,tag):
         p=os.path.join(base,fn)
-        if not os.path.exists(p): continue
+        if not os.path.exists(p): return
         try: root=ET.parse(p).getroot()
-        except: continue
+        except: return
         for ch in root.findall("channel"):
             site=(ch.get("site") or "").strip().lower()
             sid=(ch.get("site_id") or "").strip()
@@ -195,9 +194,25 @@ def load_site_channels():
             if not disp: disp=sid
             k=(site,sid)
             if k not in pretty: pretty[k]=disp
-            lst=sites.setdefault(site,[])
-            if disp not in lst: lst.append(disp)
-    for s in sites: sites[s]=sorted(sites[s])
+            prev=kind.get(k)
+            if not prev: kind[k]=tag
+            elif prev!=tag: kind[k]="B"
+    load("m_channels.xml","M"); load("d_channels.xml","D")
+    sites={}
+    per_site={}
+    for (site,sid),disp in pretty.items():
+        k=kind.get((site,sid)) or "M"
+        dmap=per_site.setdefault(site,{})
+        cur=dmap.get(disp)
+        if not cur: dmap[disp]=k
+        elif cur!=k: dmap[disp]="B"
+    for site,dmap in per_site.items():
+        lines=[]
+        for disp in sorted(dmap.keys(),key=lambda x:x.lower()):
+            k=dmap[disp]
+            dot="🟡" if k=="B" else ("🔴" if k=="M" else "🔵")
+            lines.append(f"{dot} {disp}")
+        sites[site]=lines
     return sites,pretty
 
 def parse_tv_table_and_badges(log_path):
@@ -221,16 +236,21 @@ def parse_tv_table_and_badges(log_path):
         if sk in sc and int(progs)==0: sc[sk]["warn"].add(disp)
     for site in list(sc.keys()):
         if re.search(rf"FAIL\s+\S+\s+{re.escape(site)}",raw): sc[site]["fail"]=True
+    times={}
+    for site,sec in re.findall(r"TIME\s+([a-z0-9\.\-]+)\s+(\d+)s",raw,re.I):
+        sk=site.strip().lower(); v=int(sec)
+        if sk not in times or v>times[sk]: times[sk]=v
     rows_html=[]
     for site in sorted(sc.keys()):
         s=sc[site]
         st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
         ch_list=site_ch.get(site.lower(),[])
         cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(ch_list) +"\n</details>" if ch_list else site
-        rows_html.append(f"<tr><td>{cell}</td><td align=\"right\">{s['M']}</td><td align=\"right\">{s['D']}</td><td>{st}</td></tr>")
+        tval=times.get(site.lower()); tcell=f"{tval}s" if tval is not None else "–"
+        rows_html.append(f"<tr><td>{cell}</td><td align=\"center\">{s['M']}</td><td align=\"center\">{s['D']}</td><td align=\"center\">{tcell}</td><td align=\"center\">{st}</td></tr>")
         notes.extend(sorted(s["warn"]))
         if s["fail"]: fails.append(site)
-    table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
+    table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Time</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
     extra=[]; uniq=[]
     [uniq.append(x) for x in notes if x not in uniq]
     if uniq: extra.append(f"⚠️ Notes<br>{len(uniq)} channels without EPG: {', '.join(uniq)}")
