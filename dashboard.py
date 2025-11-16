@@ -253,8 +253,7 @@ def parse_tv_table_and_badges(log_path):
     for site,sid,progs in re.findall(r"\]\s+([a-z0-9\.\-]+)\s*\([^)]+\)\s*-\s*([a-z0-9\-\._]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
         sk=site.strip().lower(); key=(sk,sid.strip().lower())
         disp=pretty.get(key,sid.strip())
-        if sk in sc and int(progs)==0 and disp:
-            sc[sk]["warn"].add(disp)
+        if sk in sc and int(progs)==0 and disp: sc[sk]["warn"].add(disp)
     for site in list(sc.keys()):
         if re.search(rf"FAIL\s+\S+\s+{re.escape(site)}",raw): sc[site]["fail"]=True
     rows_html=[]
@@ -262,6 +261,7 @@ def parse_tv_table_and_badges(log_path):
         s=sc[site]; M_tot=s["M"]; D_tot=s["D"]; tval=times.get(site,"")
         entries=site_ch.get(site.lower(),[])
         if entries:
+            inner_rows=[]
             for disp,tag,xml in entries:
                 dot="🟡" if tag=="B" else ("🔴" if tag=="M" else "🔵")
                 xml_key=(xml or "").lower()
@@ -272,38 +272,29 @@ def parse_tv_table_and_badges(log_path):
                     if ld: link_bits.append(f'<a href="{blob_base}/d_playlist.m3u8#L{ld}" style="text-decoration:none">ᴅ</a>')
                 link_html=" ".join(link_bits)
                 ch_warn=(disp in s["warn"])
-                if s["fail"]: st="❌"
-                elif ch_warn: st="⚠️"
-                else: st="✅"
-                rows_html.append(
-                    f"<tr>"
-                    f"<td>{site}</td>"
+                inner_rows.append(
+                    "<tr>"
                     f"<td>{dot} {disp}</td>"
-                    f"<td align=\"center\">{M_tot}</td>"
-                    f"<td align=\"center\">{D_tot}</td>"
-                    f"<td align=\"center\">{(str(tval)+'s') if tval!='' else ''}</td>"
-                    f"<td align=\"center\">{link_html}</td>"
-                    f"<td align=\"center\">{st}</td>"
-                    f"</tr>"
+                    f"<td style=\"text-align:right;white-space:nowrap\">{link_html}</td>"
+                    "</tr>"
                 )
-            notes.extend(sorted(s["warn"]))
-            if s["fail"]: fails.append(site)
+            inner_table="<table><tbody>"+ "".join(inner_rows) +"</tbody></table>"
+            cell=f"<details><summary>{site}</summary>\n{inner_table}\n</details>"
         else:
-            st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
-            rows_html.append(
-                f"<tr>"
-                f"<td>{site}</td>"
-                f"<td>–</td>"
-                f"<td align=\"center\">{M_tot}</td>"
-                f"<td align=\"center\">{D_tot}</td>"
-                f"<td align=\"center\">{(str(tval)+'s') if tval!='' else ''}</td>"
-                f"<td align=\"center\"></td>"
-                f"<td align=\"center\">{st}</td>"
-                f"</tr>"
-            )
-            notes.extend(sorted(s["warn"]))
-            if s["fail"]: fails.append(site)
-    table="<table><thead><tr><th>Site</th><th>Channel</th><th>M</th><th>D</th><th>Time</th><th>Link</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
+            cell=site
+        st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
+        rows_html.append(
+            f"<tr>"
+            f"<td>{cell}</td>"
+            f"<td align=\"center\">{M_tot}</td>"
+            f"<td align=\"center\">{D_tot}</td>"
+            f"<td align=\"center\">{(str(tval)+'s') if tval!='' else ''}</td>"
+            f"<td align=\"center\">{st}</td>"
+            f"</tr>"
+        )
+        notes.extend(sorted(s["warn"]))
+        if s["fail"]: fails.append(site)
+    table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Time</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
     extra=[]; uniq=[]
     [uniq.append(x) for x in notes if x not in uniq]
     if uniq: extra.append(f"⚠️ Notes<br>{len(uniq)} channels without EPG: {', '.join(uniq)}")
