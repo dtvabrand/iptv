@@ -248,13 +248,10 @@ def parse_tv_table_and_badges(log_path):
         notes.extend(sorted(s["warn"]))
         if s["fail"]: fails.append(site)
     table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Time</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
-    extra=[]; uniq=[]; dead=set()
+    extra=[]; uniq=[]
     [uniq.append(x) for x in notes if x not in uniq]
-    for name,_tag in re.findall(r"DEAD_STREAM\s+(.+?)\s+\(([MD]+)\)",raw):
-        dead.add(name)
-    if uniq: extra.append(f"⚠️ No EPG<br>{len(uniq)} channel(s): {', '.join(uniq)}")
-    if fails: extra.append(f"❌ EPG failures<br>{len(set(fails))} site(s): {', '.join(sorted(set(fails)))}")
-    if dead: extra.append(f"❌ Dead streams<br>{len(dead)} link(s): {', '.join(sorted(dead))}")
+    if uniq: extra.append(f"⚠️ Notes<br>{len(uniq)} channels without EPG: {', '.join(uniq)}")
+    if fails: extra.append(f"❌ Failures<br>{len(set(fails))} site(s): {', '.join(sorted(set(fails)))}")
     ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
     hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
     return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"raw":raw,"times":times,"hist_badges":hb}
