@@ -174,12 +174,12 @@ def update_trakt(log_path,status="success"):
     md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
 
 def load_site_channels():
-    base=os.path.dirname(os.path.abspath(__file__)); pretty={}; kind={}
-    def load(fn,tag):
+    base=os.path.dirname(os.path.abspath(__file__)); pretty={}; m_sites={}; d_sites={}
+    for fn,store in (("m_channels.xml",m_sites),("d_channels.xml",d_sites)):
         p=os.path.join(base,fn)
-        if not os.path.exists(p): return
+        if not os.path.exists(p): continue
         try: root=ET.parse(p).getroot()
-        except: return
+        except: continue
         for ch in root.findall("channel"):
             site=(ch.get("site") or "").strip().lower()
             sid=(ch.get("site_id") or "").strip()
@@ -192,36 +192,27 @@ def load_site_channels():
                 t=(ch.text or "").strip()
                 if t: disp=t
             if not disp: disp=sid
-            k=(site,sid)
-            if k not in pretty: pretty[k]=disp
-            prev=kind.get(k)
-            if not prev: kind[k]=tag
-            elif prev!=tag: kind[k]="B"
-    load("m_channels.xml","M"); load("d_channels.xml","D")
+            if (site,sid) not in pretty: pretty[(site,sid)]=disp
+            store.setdefault(site,set()).add(sid)
     sites={}
-    per_site={}
-    for (site,sid),disp in pretty.items():
-        k=kind.get((site,sid)) or "M"
-        dmap=per_site.setdefault(site,{})
-        cur=dmap.get(disp)
-        if not cur: dmap[disp]=k
-        elif cur!=k: dmap[disp]="B"
-    for site,dmap in per_site.items():
-        lines=[]
-        for disp in sorted(dmap.keys(),key=lambda x:x.lower()):
-            k=dmap[disp]
-            dot="🟡" if k=="B" else ("🔴" if k=="M" else "🔵")
-            lines.append(f"{dot} {disp}")
-        sites[site]=lines
+    for site in sorted(set(m_sites.keys())|set(d_sites.keys())):
+        m_ids=m_sites.get(site,set()); d_ids=d_sites.get(site,set()); all_ids=sorted(m_ids|d_ids)
+        rows=[]
+        for sid in all_ids:
+            disp=pretty.get((site,sid),sid)
+            in_m=sid in m_ids; in_d=sid in d_ids
+            tag="B" if (in_m and in_d) else ("M" if in_m else "D")
+            rows.append((disp,tag))
+        sites[site]=rows
     return sites,pretty
 
 def parse_tv_table_and_badges(log_path):
     raw=read(log_path,""); M=D="0"; rows=[]; notes=[]; fails=[]; sc={}
     site_ch,pretty=load_site_channels()
     if not raw:
-        ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
-        msg=f"{evt}, {ts}"; hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
-        return {"M":"0","D":"0","table":"<table></table>","notes":"","hist_badges":hb,"raw":raw}
+        ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+        hb=f"{enc_badge(shield('M','0',COL['warn']), '')} {enc_badge(shield('D','0',COL['warn']), '')} {enc_badge(shield('Run',msg,COL['run']), '')}"
+        return {"M":"0","D":"0","table":"<table></table>","notes":"","raw":raw,"times":{},"hist_badges":hb}
     m=re.search(r"m_epg\.xml\s*->\s*(\d+)\s+channels",raw); M=m.group(1) if m else "0"
     d=re.search(r"d_epg\.xml\s*->\s*(\d+)\s+channels",raw); D=d.group(1) if d else "0"
     for g,site,n in re.findall(r">\s*(m|d)\s+([a-z0-9\.\-]+)\s*:\s*(\d+)\s+channels",raw):
@@ -230,24 +221,30 @@ def parse_tv_table_and_badges(log_path):
         s=sc.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False})
         if g=="m": s["M"]+=n
         else: s["D"]+=n
+    times={}
+    for site,val in re.findall(r"TIME\s+([a-z0-9\.\-]+)\s+(\d+)s",raw,re.I):
+        try: times[site]=int(val)
+        except: continue
     for site,sid,progs in re.findall(r"\]\s+([a-z0-9\.\-]+)\s*\([^)]+\)\s*-\s*([a-z0-9\-\._]+)\s*-\s*[A-Z][a-z]{2}\s+\d{1,2},\s*\d{4}\s*\((\d+)\s+programs\)",raw,re.I):
         sk=site.strip().lower(); key=(sk,sid.strip())
         disp=pretty.get(key,sid.strip())
         if sk in sc and int(progs)==0: sc[sk]["warn"].add(disp)
     for site in list(sc.keys()):
         if re.search(rf"FAIL\s+\S+\s+{re.escape(site)}",raw): sc[site]["fail"]=True
-    times={}
-    for site,sec in re.findall(r"TIME\s+([a-z0-9\.\-]+)\s+(\d+)s",raw,re.I):
-        sk=site.strip().lower(); v=int(sec)
-        if sk not in times or v>times[sk]: times[sk]=v
     rows_html=[]
     for site in sorted(sc.keys()):
-        s=sc[site]
-        st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
-        ch_list=site_ch.get(site.lower(),[])
-        cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(ch_list) +"\n</details>" if ch_list else site
-        tval=times.get(site.lower()); tcell=f"{tval}s" if tval is not None else "–"
-        rows_html.append(f"<tr><td>{cell}</td><td align=\"center\">{s['M']}</td><td align=\"center\">{s['D']}</td><td align=\"center\">{tcell}</td><td align=\"center\">{st}</td></tr>")
+        s=sc[site]; st="❌" if s["fail"] else ("⚠️" if s["warn"] else "✅")
+        entries=site_ch.get(site.lower(),[])
+        if entries:
+            lines=[]
+            for disp,tag in entries:
+                dot="🟡" if tag=="B" else ("🔴" if tag=="M" else "🔵")
+                lines.append(f"{dot} {disp}")
+            cell=f"<details><summary>{site}</summary>\n"+ "<br>".join(lines) +"\n</details>"
+        else:
+            cell=site
+        tval=times.get(site,"")
+        rows_html.append(f"<tr><td>{cell}</td><td align=\"center\">{s['M']}</td><td align=\"center\">{s['D']}</td><td align=\"center\">{(str(tval)+'s') if tval!='' else ''}</td><td align=\"center\">{st}</td></tr>")
         notes.extend(sorted(s["warn"]))
         if s["fail"]: fails.append(site)
     table="<table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Time</th><th>Status</th></tr></thead><tbody>"+"\n".join(rows_html)+"</tbody></table>"
@@ -255,15 +252,36 @@ def parse_tv_table_and_badges(log_path):
     [uniq.append(x) for x in notes if x not in uniq]
     if uniq: extra.append(f"⚠️ Notes<br>{len(uniq)} channels without EPG: {', '.join(uniq)}")
     if fails: extra.append(f"❌ Failures<br>{len(set(fails))} site(s): {', '.join(sorted(set(fails)))}")
-    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event")
-    msg=f"{evt}, {ts}"; hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
-    return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"hist_badges":hb,"raw":raw}
+    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
+    hb=f"{shield('M',M,COL['warn'])} {shield('D',D,COL['warn'])} {shield('Run',msg,COL['run'])}"
+    return {"M":M,"D":D,"table":table,"notes":"\n\n".join(extra),"raw":raw,"times":times,"hist_badges":hb}
 
 def _best_epg_line(raw,label):
     pat=rf'\b{label}_epg\.xml\s*->\s*\d+\s+channels\b'
     i=last_line_re_excluding(raw,pat,exclude_subs=('echo','$(','"'))
     if i: return i
     return last_line_re_excluding(raw,pat,exclude_subs=())
+
+def _build_epg_seconds(owner,repo,run_id):
+    jobs=list_jobs(owner,repo,run_id)
+    if not jobs: return None
+    job=next((j for j in jobs if "build epg" in (j.get("name") or "").lower()),None) or jobs[0]
+    steps=job.get("steps") or []; step=None
+    for s in steps:
+        if (s.get("name") or "").strip()=="Build EPG":
+            step=s; break
+    if not step: return None
+    st=step.get("started_at"); et=step.get("completed_at")
+    if not (st and et): return None
+    def _p(x):
+        try:
+            if x.endswith("Z"): x=x[:-1]+"+00:00"
+            return datetime.fromisoformat(x)
+        except: return None
+    ds=_p(st); de=_p(et)
+    if not ds or not de: return None
+    sec=int((de-ds).total_seconds())
+    return sec if sec>=0 else None
 
 def update_tv(log_path,status="success"):
     md=read(RD); tv=parse_tv_table_and_badges(log_path)
@@ -287,12 +305,15 @@ def update_tv(log_path,status="success"):
     href_d=(f"{base}/job/{job_id}#step:{step_idx}:{ln_d}" if (base and job_id and step_idx and ln_d) else base)
     href_run=(base or "")
     s_m=shield('M',tv['M'],COL['warn']); s_d=shield('D',tv['D'],COL['warn'])
+    secs=_build_epg_seconds(owner,repo,run_id) if (owner and repo and run_id) else None
+    be_val=f"{secs}s" if isinstance(secs,int) and secs>=0 else "-"
+    s_build=shield('Build EPG',be_val,COL["run"])
     ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
     run_color=COL["ok"] if status=="success" else COL["err"]; s_run=shield('Run',msg,run_color)
-    dash=" ".join([enc_badge(s_m,href_m),enc_badge(s_d,href_d),enc_badge(s_run,href_run)])
+    dash=" ".join([enc_badge(s_m,href_m),enc_badge(s_d,href_d),enc_badge(s_build,href_run),enc_badge(s_run,href_run)])
     md=repl_block(md,"DASH:TV",dash)
     md=repl_block(md,"TV:OUTPUT",tv["table"]+("\n\n"+tv["notes"] if tv["notes"] else ""))
-    hist_badges=f"{enc_badge(s_m, href_m)} {enc_badge(s_d, href_d)} {enc_badge(s_run, href_run)}"
+    hist_badges=f"{enc_badge(s_m, href_m)} {enc_badge(s_d, href_d)} {enc_badge(s_build, href_run)} {enc_badge(s_run, href_run)}"
     prev=read_block(md,"TV:HISTORY"); chunk=hist_badges + (("<br>\n"+tv["notes"]) if tv["notes"] else ""); parts=[x for x in (prev or "").split("\n\n") if x.strip()]
     new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
     md=repl_block(md,"TV:HISTORY",new_hist); write(RD,md)
