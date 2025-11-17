@@ -4,13 +4,16 @@ pkg install -y git python cronie; pip install yt-dlp
 
 mkdir -p ~/.termux/boot ~/.ssh ~/ue_refresh
 cat << 'EOF' > ~/.termux/boot/start-cron.sh
+#!/data/data/com.termux/files/usr/bin/sh
 termux-wake-lock
 crond
 EOF
 chmod +x ~/.termux/boot/start-cron.sh; crond
 
 chmod 700 ~/.ssh
-echo "Paste SSH key, save and exit nano."; read -p "ENTER to open nano..." _ < /dev/tty
+echo "Now nano will open for the SSH private key."
+echo "Paste your SSH private key, then save and exit."
+read -p "Press ENTER to open nano..." _ < /dev/tty
 nano ~/.ssh/refresh_streams_d_playlist < /dev/tty > /dev/tty 2>&1
 chmod 600 ~/.ssh/refresh_streams_d_playlist
 
@@ -22,6 +25,7 @@ EOF
 chmod 600 ~/.ssh/config
 
 cat << 'EOF' > ~/ue_refresh/refresh_streams_d_playlist.sh
+#!/data/data/com.termux/files/usr/bin/bash
 check_net(){ curl -s --max-time 5 http://clients3.google.com/generate_204 >/dev/null; }
 tries=0; until check_net || [ \$tries -ge 18 ]; do sleep 10; tries=\$((tries+1)); done; check_net || exit 0
 TEMP_DIR=\$(mktemp -d); cd "\$TEMP_DIR" || exit 0
@@ -56,7 +60,7 @@ EOF
 
 chmod +x ~/ue_refresh/refresh_streams_d_playlist.sh
 
-CRONLINE='0 14 * * * /data/data/com.termux/files/home/ue_refresh/refresh_streams_d_playlist.sh >/dev/null 2>&1'
-( crontab -l 2>/dev/null; echo "$CRONLINE" ) | awk '!seen[$0]++' | crontab -
+echo "0 14 * * * /data/data/com.termux/files/home/ue_refresh/refresh_streams_d_playlist.sh >/dev/null 2>&1" | crontab -
 
+echo "To test manually:"
 echo "~/ue_refresh/refresh_streams_d_playlist.sh"
