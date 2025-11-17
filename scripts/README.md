@@ -11,9 +11,14 @@
 cmd /c "echo. | ssh-keygen -t ed25519 -C trakt-lists -f C:\ProgramData\ue\.ssh\refresh_streams_d_playlist"
 ```
 
-### Show public key
+### Copy private key to Termux
 ```
 Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist"
+```
+
+### Copy public key to GitHub
+```
+Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist.pub"
 ```
 
 ### Refresh streams d_playlist (Termux)
