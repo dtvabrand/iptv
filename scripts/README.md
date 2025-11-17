@@ -13,7 +13,7 @@ cmd /c "echo. | ssh-keygen -t ed25519 -C trakt-lists -f C:\ProgramData\ue\.ssh\r
 
 ### Show public key
 ```
-Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist.pub"
+Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist"
 ```
 
 ### Refresh streams d_playlist (Termux)
