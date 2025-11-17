@@ -17,8 +17,8 @@ chmod 700 ~/.ssh
 
 echo "Now nano will open for the SSH private key."
 echo "Paste your SSH private key, then save and exit."
-read -p "Press ENTER to open nano..." _
-nano ~/.ssh/refresh_streams_d_playlist
+read -p "Press ENTER to open nano..." _ < /dev/tty
+nano ~/.ssh/refresh_streams_d_playlist < /dev/tty > /dev/tty 2>&1
 chmod 600 ~/.ssh/refresh_streams_d_playlist
 
 cat << 'EOF' > ~/.ssh/config
