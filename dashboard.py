@@ -221,7 +221,8 @@ def parse_tv_table_and_badges(log_path):
         rows.append((g,site,int(n)))
     for g,site,n in rows:
         s=sc.setdefault(site,{"M":0,"D":0,"warn":set(),"fail":False,"chp":{}})
-        (s["M"]:=s["M"]+n) if g=="m" else (s["D"]:=s["D"]+n)
+        if g=="m": s["M"]+=n
+        else: s["D"]+=n
     times={}
     for site,val in re.findall(r"TIME\s+([a-z0-9\.\-]+)\s+(\d+)s",raw,re.I):
         try: times[site]=int(val)
