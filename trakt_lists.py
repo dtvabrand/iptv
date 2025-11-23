@@ -45,7 +45,7 @@ SITES=[
 ]
 
 QIDS = [
-    ("The Christmas Ring", ""),
+    ("The Christmas Ring", "Q136411457"),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
