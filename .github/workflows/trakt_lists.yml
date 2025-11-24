@@ -100,7 +100,7 @@ jobs:
   update_readme:
     if: ${{ always() }}
     needs: trakt_lists
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     env:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       RUN_EVENT: ${{ github.event_name }}
@@ -108,7 +108,6 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       DASH_COMMIT_MSG: 'Trakt lists updated! 🛸'
       TRAKT_LOG: trakt_run.log
-      
     steps:
       - uses: actions/checkout@v4
 
