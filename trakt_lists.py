@@ -45,7 +45,6 @@ SITES=[
 ]
 
 QIDS = [
-    ("The Christmas Ring", "Q136411457"),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
@@ -93,6 +92,7 @@ QIDS = [
     ("The Assessment", "Q126086644"),
     ("The Beatles: Get Back - The Rooftop Concert", "Q110787453"),
     ("The Big Bend", "Q136654951"),
+    ("The Christmas Ring", "Q136411457"),
     ("The Curse of The Necklace", "Q136513307"),
     ("The Death of Film", "Q136654895"),
     ("The Devil and the Daylong Brothers", "Q133747736"),
