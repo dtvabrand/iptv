@@ -4,17 +4,18 @@
 
 ### 🛸 Trakt lists
 <!-- DASH:TRAKT -->
-[![X](https://img.shields.io/badge/New%20Movie-2-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502/job/56604428772#step:7:35) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502/job/56604428772#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%2028%20nov%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502)
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459/job/56677464115#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%2029%20nov%202025%206%3A15%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459)
 <!-- /DASH:TRAKT -->
 
 <!-- TRAKT:OUTPUT -->
-#### ✨ _New movies!_
-🍿 Aftershock: The Nicole P Bell Story, Stone Creek Killer
+
 <!-- /TRAKT:OUTPUT -->
 
 <details><summary>Previous days</summary>
   
 <!-- TRAKT:HISTORY -->
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459/job/56677464115#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%2029%20nov%202025%206%3A15%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19779419459) <!-- TRAKT_RUN:19779419459 -->
+
 [![X](https://img.shields.io/badge/New%20Movie-2-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502/job/56604428772#step:7:35) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502/job/56604428772#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%2028%20nov%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19754811502) <!-- TRAKT_RUN:19754811502 --><br>
 🍿 Aftershock: The Nicole P Bell Story, Stone Creek Killer
 
@@ -84,9 +85,6 @@
 
 [![X](https://img.shields.io/badge/New%20Movie-2-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/18963608199/job/54155936307#step:5:37) [![X](https://img.shields.io/badge/Token-valid-34a6db)](https://github.com/dtvabrand/updates/actions/runs/18963608199/job/54155936307#step:5:20) [![X](https://img.shields.io/badge/Run-cron%2C%2031%20oct%202025%206%3A25%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/18963608199) <!-- TRAKT_RUN:18963608199 --><br>
 🍿 Violent Ends, Messy
-
-[![X](https://img.shields.io/badge/New%20Movie-1-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/18944842070/job/54093135871#step:5:36) [![X](https://img.shields.io/badge/Token-valid-34a6db)](https://github.com/dtvabrand/updates/actions/runs/18944842070/job/54093135871#step:5:20) [![X](https://img.shields.io/badge/Run-cron%2C%2030%20oct%202025%203%3A52%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/18944842070) <!-- TRAKT_RUN:18944842070 --><br>
-🍿 Self-Help
 <!-- /TRAKT:HISTORY -->
 
 </details>

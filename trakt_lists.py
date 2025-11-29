@@ -45,12 +45,11 @@ SITES=[
 ]
 
 QIDS = [
-    ("Aftershock: The Nicole P Bell Story", "Q137103837"),
-    ("Stone Creek Killer", "Q137103841"),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
     ("A Spartan Dream", "Q136655065"),
+    ("Aftershock: The Nicole P Bell Story", "Q137103837"),
     ("Alma and the Wolf", "Q125029935"),
     ("Appalachian Dog", "Q135067975"),
     ("Around the World with Timon & Pumbaa", "Q18192535"),
@@ -90,6 +89,7 @@ QIDS = [
     ("Snorkeling", "Q116244091"),
     ("Star People", "Q136655054"),
     ("Stolen Girl", "Q136386270"),
+    ("Stone Creek Killer", "Q137103841"),
     ("The A-Frame", "Q126184078"),
     ("The Assessment", "Q126086644"),
     ("The Beatles: Get Back - The Rooftop Concert", "Q110787453"),
