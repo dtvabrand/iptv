@@ -8,7 +8,7 @@
 
 ### Generate key (Windows)
 ```
-cmd /c "echo. | ssh-keygen -t ed25519 -C trakt-lists -f C:\ProgramData\ue\.ssh\refresh_streams_d_playlist"
+cmd /c "echo. | ssh-keygen -t ed25519 -C refresh_streams_d_playlist -f C:\ProgramData\ue\.ssh\refresh_streams_d_playlist
 ```
 
 ### Copy private key to Termux
