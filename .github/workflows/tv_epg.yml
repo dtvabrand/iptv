@@ -40,7 +40,12 @@ jobs:
 
       - name: Patch tvpassport timezone (+6h)
         run: |
-          sed -i "s/return dayjs.tz(time, 'YYYY-MM-DD HH:mm:ss', 'America\/New_York')/return dayjs.tz(time, 'YYYY-MM-DD HH:mm:ss', 'America\/New_York').add(6, 'hour')/" epg/sites/tvpassport.com/tvpassport.com.config.js
+          set -e
+          echo "=== Prima della patch ==="
+          sed -n '90,130p' epg/sites/tvpassport.com/tvpassport.com.config.js || true
+          sed -i "s/dayjs.tz(time, 'YYYY-MM-DD HH:mm:ss', 'America\/New_York')/dayjs.tz(time, 'YYYY-MM-DD HH:mm:ss', 'America\/New_York').add(6, 'hour')/" epg/sites/tvpassport.com/tvpassport.com.config.js
+          echo "=== Dopo la patch ==="
+          sed -n '90,130p' epg/sites/tvpassport.com/tvpassport.com.config.js || true
 
       - name: Setup Node
         uses: actions/setup-node@v4
