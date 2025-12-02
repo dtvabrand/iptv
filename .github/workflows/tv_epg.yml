@@ -30,7 +30,7 @@ jobs:
     outputs:
       job_id: ${{ steps.build_step.outputs.job_id }}
     env:
-      PER_SITE_JOBS: "6"
+      PER_SITE_JOBS: "10"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
