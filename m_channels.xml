@@ -11,8 +11,8 @@
   <channel site="guidatv.sky.it"                  lang="it" xmltv_id="tv2000"      site_id="DTH#7588">TV2000</channel>
 
   <!-- ================== USA ================== -->
-  <channel site="epgshare01.online"    lang="en" xmltv_id="abc-news-live"     site_id="US2#ABC.News.Live.us2">ABC News Live</channel>
-  <channel site="epgshare01.online"    lang="en" xmltv_id="livenowfromfox"    site_id="PLEX1#plex.tv.LiveNOW.from.FOX.plex">LiveNOW from FOX</channel>
+  <channel site="pluto.tv"    lang="en" xmltv_id="abc-news-live"     site_id="6508be683a0d700008c534e4">ABC News Live</channel>
+  <channel site="pluto.tv"    lang="en" xmltv_id="livenowfromfox"    site_id="63d025db4e83e700086eaa96">LiveNOW from FOX</channel>
 
   <channel site="tvpassport.com"    lang="en" xmltv_id="wabc"    site_id="abc-wabc-new-york-ny/1769">ABC 7</channel>
   <channel site="tvpassport.com"    lang="en" xmltv_id="wnbc"    site_id="nbc-wnbc-new-york-ny-hd/4559">NBC 4</channel>
