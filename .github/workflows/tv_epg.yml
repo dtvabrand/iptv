@@ -49,6 +49,7 @@ jobs:
         id: build_step
         shell: bash
         env:
+          NODE_OPTIONS: "--max-old-space-size=6000"
           PIPELINE: |
             #!/usr/bin/env bash
             set -euo pipefail
