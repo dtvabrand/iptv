@@ -21,7 +21,12 @@ Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist"
 Get-Content -Raw "C:\ProgramData\ue\.ssh\refresh_streams_d_playlist.pub"
 ```
 
-### Refresh streams d_playlist (Termux)
+### One-time installation (Termux)
 ```
 curl -fsSL https://raw.githubusercontent.com/dtvabrand/entertainment/main/scripts/refresh_streams_d_playlist.sh | bash
+```
+
+### Manual run (refresh now)
+```
+~/ue_refresh/refresh_streams_d_playlist.sh
 ```
