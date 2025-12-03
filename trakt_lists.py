@@ -45,8 +45,6 @@ SITES=[
 ]
 
 QIDS = [
-    ("Savage Hunt", "Q137186379"),
-    ("The Toy Talks Learning Movie", ""),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
@@ -87,6 +85,7 @@ QIDS = [
     ("Recess: Taking the Fifth Grade", "Q5412173"),
     ("Regretting You", "Q135907051"),
     ("Reverence", "Q136891758"),
+    ("Savage Hunt", "Q137186379"),
     ("Self-Help", "Q136673337"),
     ("Snorkeling", "Q116244091"),
     ("Star People", "Q136655054"),
