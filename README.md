@@ -4,7 +4,7 @@
 
 ### 🛸 Trakt lists
 <!-- DASH:TRAKT -->
-[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832/job/56985343443#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%203%20dic%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832)
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838/job/57102331622#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%204%20dic%202025%206%3A15%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838)
 <!-- /DASH:TRAKT -->
 
 <!-- TRAKT:OUTPUT -->
@@ -14,6 +14,8 @@
 <details><summary>Previous days</summary>
   
 <!-- TRAKT:HISTORY -->
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838/job/57102331622#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%204%20dic%202025%206%3A15%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19918492838) <!-- TRAKT_RUN:19918492838 -->
+
 [![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832/job/56985343443#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%203%20dic%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19883227832) <!-- TRAKT_RUN:19883227832 -->
 
 [![X](https://img.shields.io/badge/New%20Movie-2-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19848079047/job/56869272728#step:7:35) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19848079047/job/56869272728#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%202%20dic%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/19848079047) <!-- TRAKT_RUN:19848079047 --><br>
@@ -81,8 +83,6 @@
 
 [![X](https://img.shields.io/badge/New%20Movie-2-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19092227776/job/54544991163#step:5:37) [![X](https://img.shields.io/badge/Token-valid-34a6db)](https://github.com/dtvabrand/updates/actions/runs/19092227776/job/54544991163#step:5:20) [![X](https://img.shields.io/badge/Run-cron%2C%205%20nov%202025%206%3A26%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19092227776) <!-- TRAKT_RUN:19092227776 --><br>
 🍿 Appalachian Dog, Finding Joy
-
-[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19058744154/job/54434193626#step:5) [![X](https://img.shields.io/badge/Token-valid-34a6db)](https://github.com/dtvabrand/updates/actions/runs/19058744154/job/54434193626#step:5:20) [![X](https://img.shields.io/badge/Run-cron%2C%204%20nov%202025%206%3A24%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19058744154) <!-- TRAKT_RUN:19058744154 -->
 <!-- /TRAKT:HISTORY -->
 
 </details>
