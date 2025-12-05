@@ -45,6 +45,12 @@ SITES=[
 ]
 
 QIDS = [
+    ("Merrily We Roll Along", "Q6820251"),
+    ("Diary of a Wimpy Kid: The Last Straw", "Q5263270"),
+    ("Frontier Crucible", "Q131308619"),
+    ("Hunting Season", ""),
+    ("Man Finds Tape", ""),
+    ("Speed Train", ""),
     ("A Breed Apart", "Q133845943"),
     ("A Christmas Mystery", "Q135236473"),
     ("A Hollywood Christmas", "Q125975842"),
