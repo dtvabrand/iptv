@@ -46,8 +46,6 @@ SITES=[
 
 QIDS = [
     ("A Breed Apart", "Q133845943"),
-    ("A Christmas Mystery", "Q135236473"),
-    ("A Hollywood Christmas", "Q125975842"),
     ("A Spartan Dream", "Q136655065"),
     ("Aftershock: The Nicole P Bell Story", "Q137103837"),
     ("Alma and the Wolf", "Q125029935"),
@@ -67,7 +65,6 @@ QIDS = [
     ("Finding Joy", "Q136705825"),
     ("Frontier Crucible", "Q131308619"),
     ("Good Bad Things", "Q127763750"),
-    ("Holiday Harmony", "Q135236487"),
     ("Hunting Season", "Q137215321"),
     ("Jimmy and Stiggs", "Q136655063"),
     ("Joy to the World", "Q136682442"),
@@ -102,7 +99,6 @@ QIDS = [
     ("The Beatles: Get Back - The Rooftop Concert", "Q110787453"),
     ("The Big Bend", "Q136654951"),
     ("The Christmas Ring", "Q136411457"),
-    ("The Curse of The Necklace", "Q136513307"),
     ("The Death of Film", "Q136654895"),
     ("The Devil and the Daylong Brothers", "Q133747736"),
     ("The Fetus", "Q136655074"),
@@ -114,7 +110,6 @@ QIDS = [
     ("The Sound", "Q136655029"),
     ("The Workout", "Q136655068"),
     ("To Die Alone", "Q136654935"),
-    ("Tom and Jerry: Forbidden Compass", "Q135432802"),
     ("Trap House", "Q125388230"),
     ("Uppercut", "Q136654989"),
     ("Violent Ends", "Q136673339"),
