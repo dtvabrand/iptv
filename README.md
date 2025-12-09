@@ -4,17 +4,18 @@
 
 ### 🛸 Trakt lists
 <!-- DASH:TRAKT -->
-[![X](https://img.shields.io/badge/New%20Movie-5-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276/job/57398045356#step:7:38) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276/job/57398045356#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%208%20dic%202025%206%3A18%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276)
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327) [![X](https://img.shields.io/badge/Token-refreshed-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327/job/57512083820#step:7:19) [![X](https://img.shields.io/badge/Run-cron%2C%209%20dic%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327)
 <!-- /DASH:TRAKT -->
 
 <!-- TRAKT:OUTPUT -->
-#### ✨ _New movies!_
-🍿 Holiday Harmony, A Christmas Mystery, A Hollywood Christmas, The Curse of the Necklace, Tom and Jerry: Forbidden Compass
+
 <!-- /TRAKT:OUTPUT -->
 
 <details><summary>Previous days</summary>
   
 <!-- TRAKT:HISTORY -->
+[![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327) [![X](https://img.shields.io/badge/Token-refreshed-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327/job/57512083820#step:7:19) [![X](https://img.shields.io/badge/Run-cron%2C%209%20dic%202025%206%3A16%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20052799327) <!-- TRAKT_RUN:20052799327 -->
+
 [![X](https://img.shields.io/badge/New%20Movie-5-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276/job/57398045356#step:7:38) [![X](https://img.shields.io/badge/Token-valid-34a6db?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276/job/57398045356#step:7:18) [![X](https://img.shields.io/badge/Run-cron%2C%208%20dic%202025%206%3A18%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20017549276) <!-- TRAKT_RUN:20017549276 --><br>
 🍿 Holiday Harmony, A Christmas Mystery, A Hollywood Christmas, The Curse of the Necklace, Tom and Jerry: Forbidden Compass
 
@@ -81,9 +82,6 @@
 🍿 Rose Red
 
 [![X](https://img.shields.io/badge/New%20Movie-0-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19221466725/job/54940238463#step:5) [![X](https://img.shields.io/badge/Token-refreshed-2cc36b)](https://github.com/dtvabrand/updates/actions/runs/19221466725/job/54940238463#step:5:21) [![X](https://img.shields.io/badge/Run-cron%2C%2010%20nov%202025%206%3A18%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19221466725) <!-- TRAKT_RUN:19221466725 -->
-
-[![X](https://img.shields.io/badge/New%20Movie-1-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19203817764/job/54896099746#step:5:36) [![X](https://img.shields.io/badge/Token-valid-34a6db)](https://github.com/dtvabrand/updates/actions/runs/19203817764/job/54896099746#step:5:20) [![X](https://img.shields.io/badge/Run-cron%2C%209%20nov%202025%206%3A15%20am-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/updates/actions/runs/19203817764) <!-- TRAKT_RUN:19203817764 --><br>
-🍿 The Mortimers
 <!-- /TRAKT:HISTORY -->
 
 </details>
