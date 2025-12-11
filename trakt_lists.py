@@ -514,7 +514,6 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
         nk=norm_key(t)
         return (manual_exact.get(t,"") or existing_by_norm.get(nk,"") or title_lower_to_qid_norm.get(nk,""))
 
-    # --- NUOVA LOGICA: preserva i QIDS manuali "in uso" (non orfani) ---
     scraped_title_norms=set()
     for i in per_site_films:
         for f in per_site_films.get(i,[]) or []:
@@ -524,8 +523,6 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
                       if (q or "").strip() and norm_key(t) in scraped_title_norms]
 
     preserved_titles=set(t for (t,_) in preserved_manual)
-
-    # Unione: titoli ⚠️ + titoli preservati
     wanted_titles=set(titles_for_qids_global) | preserved_titles
 
     def sort_key_title(t):
@@ -533,7 +530,6 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
 
     sorted_titles=sorted(wanted_titles, key=sort_key_title)
 
-    # Dedup per titolo normalizzato, preferendo QID non vuoti
     out=[]
     seen_norm=set()
     for t in sorted_titles:
@@ -545,12 +541,13 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
         out.append((t,q))
         seen_norm.add(nk)
 
-    # Dump del blocco QIDS aggiornato (senza aggiungere nuove righe vuote extra)
     p=os.path.realpath(__file__); s=open(p,encoding="utf-8").read()
     prev_titles={t for (t,_) in QIDS}; added_titles=[t for (t,_) in out if t not in prev_titles]
     if added_titles:
-        uniq=list(dict.fromkeys(added_titles)); msg="📝 QID for " + ", ".join(uniq); print(msg)
-        try: api.add_task(content=msg, due_string="today")
+        uniq=list(dict.fromkeys(added_titles))
+        log_msg="📝 QID for " + ", ".join(f'"{t}"' for t in uniq); print(log_msg)
+        todoist_msg="📝 QID for " + ", ".join(f"_{t}_" for t in uniq)
+        try: api.add_task(content=todoist_msg, due_string="today")
         except: pass
     def _dump_QIDS():
         esc=lambda x: json.dumps(str(x),ensure_ascii=False)
