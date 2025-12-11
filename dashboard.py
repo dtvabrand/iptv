@@ -126,13 +126,17 @@ def parse_titles(txt):
     titles=[]
     for raw in clean_lines(txt):
         if "📝 QID for" in raw:
-            payload=raw.split("📝 QID for",1)[1].strip()
-            if payload.startswith(":"): payload=payload[1:].strip()
-            parts=[p.strip() for p in payload.split(",") if p.strip()]
-            for p in parts:
-                if p not in titles: titles.append(p)
+            payload=raw.split("📝 QID for",1)[1].strip(); 
+            payload=payload[1:].strip() if payload.startswith(":") else payload
+            qs=re.findall(r'"([^"]+)"',payload)
+            if qs:
+                for t in qs:
+                    t=t.strip(); 
+                    if t and t not in titles: titles.append(t)
+            else:
+                if payload and payload not in titles: titles.append(payload)
         elif raw.strip().startswith("🍿"):
-            t=raw.split("🍿",1)[1].strip()
+            t=raw.split("🍿",1)[1].strip(); 
             if t and t not in titles: titles.append(t)
     return titles
 
