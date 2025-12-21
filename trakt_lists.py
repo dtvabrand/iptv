@@ -45,7 +45,7 @@ SITES=[
 ]
 
 QIDS = [
-    ("Chaperone", ""),
+    ("Chaperone", "Q124515188"),
     ("Hunting Season", "Q137215321"),
     ("Turbulence", "Q137366793"),
     ("A Breed Apart", "Q133845943"),
