@@ -45,7 +45,6 @@ SITES=[
 ]
 
 QIDS = [
-    ("Chaperone", "Q124515188"),
     ("Hunting Season", "Q137215321"),
     ("Turbulence", "Q137366793"),
     ("A Breed Apart", "Q133845943"),
@@ -60,6 +59,7 @@ QIDS = [
     ("Bull Run", "Q133849169"),
     ("Bunny", "Q136773157"),
     ("California King", "Q134136884"),
+    ("Chaperone", "Q124515188"),
     ("Diary of a Wimpy Kid: The Last Straw", "Q136530239"),
     ("Dreaming of You", "Q136654956"),
     ("Et Tu", "Q135484808"),
