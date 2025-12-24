@@ -47,6 +47,7 @@ SITES=[
 QIDS = [
     ("Hunting Season", "Q137215321"),
     ("Turbulence", "Q137366793"),
+    ("Batgirl", "Q109860581"),
     ("A Breed Apart", "Q133845943"),
     ("A Spartan Dream", "Q136655065"),
     ("Aftershock: The Nicole P Bell Story", "Q137103837"),
