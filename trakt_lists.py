@@ -645,7 +645,7 @@ def main():
     with ThreadPoolExecutor(max_workers=WD_WORKERS) as ex:
         futs=[ex.submit(S.get,"https://www.wikidata.org/w/api.php",
                         params={"action":"wbgetentities","format":"json","formatversion":2,
-                                "ids":"|".join(qids[i:i+50]),"props":"claims"},
+                                "ids":"|".join(qids[i:i+50]),"props":"claims","redirects":1},
                         timeout=HTTP_TIMEOUT) for i in range(0,len(qids),50)]
         for fu in as_completed(futs):
             try:
