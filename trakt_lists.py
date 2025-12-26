@@ -7,7 +7,6 @@ from collections import namedtuple, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from todoist_api_python.api import TodoistAPI
 
 SITE_WORKERS=8
 WD_WORKERS=16
@@ -17,7 +16,6 @@ sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8',line_buffering=Tr
 UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 WFilm=namedtuple('WFilm','title date_iso url page is_full link_state',defaults=(True,''))
 TODAY=datetime.now().date(); CUR_YEAR=TODAY.year
-api=TodoistAPI(os.getenv("TODOIST_API_KEY"))
 S=requests.Session(); S.headers["User-Agent"]=UA
 ad=HTTPAdapter(max_retries=Retry(total=2,backoff_factor=0.6,status_forcelist=(429,500,502,503,504),allowed_methods=frozenset({"GET","POST"})),pool_connections=64,pool_maxsize=64)
 S.mount("https://",ad); S.mount("http://",ad)
@@ -129,13 +127,41 @@ def trakt_auth_refresh():
     if now<=exp-300: rem=int(exp-now); print(f"🔐 Trakt token valid (~{rem//3600}h {(rem%3600)//60}m)"); return trakt_data,h
     print("⏳ Trakt token expired. Refreshing..."); r=requests.post(trakt_data["baseurl"]+"/oauth/token",json={"grant_type":"refresh_token","refresh_token":trakt_data["refresh_token"],"client_id":trakt_data["client_id"],"client_secret":trakt_data["client_secret"]})
     if r.status_code!=200:
-        print("🧩 Need new refresh token!")
-        try: api.add_task(content="🧩 Need new refresh token!", due_string="today", priority=4)
-        except: pass
-        finally: sys.exit(0)
+        print("❌ Trakt refresh failed:", r.status_code, (r.text or "")[:300])
+        sys.exit(1)
     trakt_data.update(r.json()); trakt_data["created_at"]=time.time(); h["Authorization"]=f"Bearer {trakt_data['access_token']}"; print("🔄 Trakt token refresh completed")
     open(TOKENS_PATH,"w",encoding="utf-8").write(json.dumps(trakt_data,ensure_ascii=False,indent=2))
     return trakt_data,h
+    
+def gh_sync_qid_issue(missing_titles):
+    try:
+        tok=(os.getenv("GITHUB_TOKEN") or "").strip()
+        repo=(os.getenv("GITHUB_REPOSITORY") or "").strip()
+        if not tok or not repo: return
+        ISSUE_TITLE="QID missing (auto)"
+        h={"Authorization":f"Bearer {tok}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}
+        base="https://api.github.com"
+        q=f'repo:{repo} is:issue in:title "{ISSUE_TITLE}"'
+        r=requests.get(f"{base}/search/issues",params={"q":q},headers=h,timeout=HTTP_TIMEOUT)
+        items=(r.json() or {}).get("items") or []
+        hit=next((it for it in items if (it.get("title") or "")==ISSUE_TITLE), None)
+        num=hit.get("number") if hit else None
+
+        now=datetime.now().strftime("%Y-%m-%d %H:%M")
+        run=(os.getenv("RUN_URL") or "").strip()
+        if missing_titles:
+            body="\n".join([f"Auto-generated: {now}"]+([f"Run: {run}"] if run else [])+["","Missing QIDs:"]+[f"- [ ] {t}" for t in missing_titles])
+            payload={"body":body,"state":"open"}
+            if num:
+                requests.patch(f"{base}/repos/{repo}/issues/{num}",json=payload,headers=h,timeout=HTTP_TIMEOUT)
+            else:
+                requests.post(f"{base}/repos/{repo}/issues",json={"title":ISSUE_TITLE,**payload,"labels":["automation","qid"]},headers=h,timeout=HTTP_TIMEOUT)
+        else:
+            if num:
+                body="\n".join([f"Auto-generated: {now}","✅ No missing QIDs.",""])
+                requests.patch(f"{base}/repos/{repo}/issues/{num}",json={"body":body,"state":"closed"},headers=h,timeout=HTTP_TIMEOUT)
+    except Exception as e:
+        print("⚠️ GitHub issue sync failed:", type(e).__name__)
 
 def wikipedia_scraping(url:str,selector:Any)->List[WFilm]:
     r=S.get(url,timeout=HTTP_TIMEOUT); doc=html.fromstring(r.content); tbls=doc.xpath("//table[contains(concat(' ', @class, ' '), ' wikitable ')]"); href_filter=None; table_indices=[0]
@@ -546,14 +572,14 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
         out.append((t,q))
         seen_norm.add(nk)
 
+    missing_titles=[t for (t,q) in out if not (q or "").strip()]
+    if missing_titles: print("📝 Missing QIDs:", ", ".join(f'"{t}"' for t in missing_titles))
+    gh_sync_qid_issue(missing_titles)
     p=os.path.realpath(__file__); s=open(p,encoding="utf-8").read()
     prev_titles={t for (t,_) in QIDS}; added_titles=[t for (t,_) in out if t not in prev_titles]
     if added_titles:
         uniq=list(dict.fromkeys(added_titles))
         log_msg="📝 QID for " + ", ".join(f'"{t}"' for t in uniq); print(log_msg)
-        todoist_msg="📝 QID for " + ", ".join(f"_{t}_" for t in uniq)
-        try: api.add_task(content=todoist_msg, due_string="today")
-        except: pass
     def _dump_QIDS():
         esc=lambda x: json.dumps(str(x),ensure_ascii=False)
         return "QIDS = [\n" + "\n".join(f"    ({esc(m)}, {esc(q)})," for (m,q) in out) + "\n]\n"
