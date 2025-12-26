@@ -28,7 +28,7 @@ SITES=[
     ("https://en.wikipedia.org/wiki/List_of_Universal_Pictures_films_(2020%E2%80%932029)","🌎 Universal Pictures","", "universal-pictures",0),
     ("https://en.wikipedia.org/wiki/List_of_Paramount_Pictures_films_(2020%E2%80%932029)","🏔️ Paramount Pictures","", "paramount-pictures",0),
     ("https://en.wikipedia.org/wiki/List_of_Warner_Bros._films_(2020%E2%80%932029)","🛡️ Warner Bros. Pictures","", "warner-bros-pictures",0),
-    ("https://en.wikipedia.org/wiki/List_of_Walt_Disney_Studios_films_(2020%E2%80%932029)","💫 Walt Disney Studios","", "walt-disney-studios",0),
+    ("https://en.wikipedia.org/wiki/List_of_Walt_Disney_Studios_films_(2020%E2%80%932029)","💫 Walt Disney Studios","", "walt-disney-studios",[0,1,2,3,4,5,6]),
     ("https://en.wikipedia.org/wiki/List_of_Columbia_Pictures_films_(2020%E2%80%932029)","🗽 Columbia Pictures","", "columbia-pictures",0),
     ("https://en.wikipedia.org/wiki/List_of_adaptations_of_works_by_Stephen_King","👀 Stephen King","", "stephen-king",[0,1,4]),
     ("https://en.wikipedia.org/wiki/List_of_Walt_Disney_Animation_Studios_films","🪄 Ink & Magic – A Disney Animation Journey","WDAS","ink-magic-a-disney-animation-journey",0),
