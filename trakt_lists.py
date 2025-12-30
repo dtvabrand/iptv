@@ -37,12 +37,12 @@ SITES=[
 ]
 
 QIDS = [
-    ("Batgirl", "Q109860581"),
     ("A Goofy Movie", "Q869993"),
     ("An Extremely Goofy Movie", "Q1537670"),
     ("Aquaman and the Lost Kingdom", "Q91226161"),
     ("Around the World with Timon & Pumbaa", "Q18192535"),
     ("Avengers: Age of Ultron", "Q14171368"),
+    ("Batgirl", "Q109860581"),
     ("Batman Begins", "Q166262"),
     ("Batman v Superman: Dawn of Justice", "Q14772351"),
     ("Blade II", "Q159638"),
