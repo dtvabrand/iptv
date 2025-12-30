@@ -15,7 +15,7 @@ HTTP_TIMEOUT=(4,10)
 sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8',line_buffering=True)
 UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 WFilm=namedtuple('WFilm','title date_iso url page is_full link_state',defaults=(True,''))
-TODAY=datetime.now().date(); CUR_YEAR=TODAY.year
+TODAY=datetime.now().date();
 S=requests.Session(); S.headers["User-Agent"]=UA
 ad=HTTPAdapter(max_retries=Retry(total=2,backoff_factor=0.6,status_forcelist=(429,500,502,503,504),allowed_methods=frozenset({"GET","POST"})),pool_connections=64,pool_maxsize=64)
 S.mount("https://",ad); S.mount("http://",ad)
@@ -24,22 +24,16 @@ DATE_FULL_RE=re.compile(r"\b("+"|".join(m.capitalize() for m in MONTHS)+r")\s+(\
 YEAR_RE=re.compile(r"\b((?:19|20)\d{2})\b")
 
 SITES=[
-    (f"https://en.wikipedia.org/wiki/List_of_American_films_of_{CUR_YEAR}", f"🎟️ American Films of {CUR_YEAR}", "", f"american-films-of-{CUR_YEAR}", [1,2,3,4]),
-    ("https://en.wikipedia.org/wiki/List_of_Universal_Pictures_films_(2020%E2%80%932029)","🌎 Universal Pictures","", "universal-pictures",0),
-    ("https://en.wikipedia.org/wiki/List_of_Paramount_Pictures_films_(2020%E2%80%932029)","🏔️ Paramount Pictures","", "paramount-pictures",0),
-    ("https://en.wikipedia.org/wiki/List_of_Warner_Bros._films_(2020%E2%80%932029)","🛡️ Warner Bros. Pictures","", "warner-bros-pictures",[0,1,2,3,4,5,6]),
-    ("https://en.wikipedia.org/wiki/List_of_Walt_Disney_Studios_films_(2020%E2%80%932029)","💫 Walt Disney Studios","", "walt-disney-studios",0),
-    ("https://en.wikipedia.org/wiki/List_of_Columbia_Pictures_films_(2020%E2%80%932029)","🗽 Columbia Pictures","", "columbia-pictures",0),
-    ("https://en.wikipedia.org/wiki/List_of_adaptations_of_works_by_Stephen_King","👀 Stephen King","", "stephen-king",[0,1,4]),
+    ("https://en.wikipedia.org/wiki/List_of_films_based_on_Marvel_Comics_publications","✪ Marvel Comics: Live-Action Films","", "marvel-comics-live-action-films",0),
+    ("https://en.wikipedia.org/wiki/List_of_films_based_on_DC_Comics_publications","🌌 DC Comics: Live-Action Films","", "dc-comics-live-action-films",0),
+    ("https://en.wikipedia.org/wiki/List_of_adaptations_of_works_by_Stephen_King","👀 Stephen King","", "stephen-king",[0,1,4]),    
     ("https://en.wikipedia.org/wiki/List_of_Walt_Disney_Animation_Studios_films","🪄 Ink & Magic – A Disney Animation Journey","WDAS","ink-magic-a-disney-animation-journey",0),
     ("https://en.wikipedia.org/wiki/List_of_Disney_Television_Animation_productions","🪄 Ink & Magic – A Disney Animation Journey","DTVA","ink-magic-a-disney-animation-journey",[4,5]),
     ("https://en.wikipedia.org/wiki/Disneytoon_Studios","🪄 Ink & Magic – A Disney Animation Journey","DTS","ink-magic-a-disney-animation-journey",0),
     ("https://en.wikipedia.org/wiki/List_of_Disney%2B_original_films","🪄 Ink & Magic – A Disney Animation Journey","D+","ink-magic-a-disney-animation-journey",{"tables":0,"href_contains":"animated"}),
     ("https://en.wikipedia.org/wiki/List_of_Pixar_films","🪄 Ink & Magic – A Disney Animation Journey","Pixar","ink-magic-a-disney-animation-journey",0),
-    ("https://en.wikipedia.org/wiki/List_of_films_based_on_Marvel_Comics_publications","✪ Marvel Comics: Live-Action Films","", "marvel-comics-live-action-films",0),
-    ("https://en.wikipedia.org/wiki/List_of_Warner_Bros._Pictures_Animation_productions","🐰 Warner Bros. Toons — Films & TV","WBPA","warner-bros-toons-films-tv",0),
+    ("https://en.wikipedia.org/wiki/List_of_Warner_Bros._Pictures_Animation_productions","🐰 Warner Bros. Toons — Films & TV","WBPA","warner-bros-toons-films-tv",0),    
     ("https://en.wikipedia.org/wiki/List_of_Warner_Bros._Animation_productions","🐰 Warner Bros. Toons — Films & TV","WBA","warner-bros-toons-films-tv",[0,1,4]),
-    ("https://en.wikipedia.org/wiki/List_of_films_based_on_DC_Comics_publications","🌌 DC Comics: Live-Action Films","", "dc-comics-live-action-films",0),
 ]
 
 QIDS = [
