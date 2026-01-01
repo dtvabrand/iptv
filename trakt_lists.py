@@ -259,7 +259,7 @@ def trakt_sync_list(per_site_films, per_site_pos, per_site_label, per_site_slug,
 
     canonical_label={
         "ink-magic-a-disney-animation-journey": "🪄 Ink & Magic – A Disney Animation Journey",
-        "warner-bros-toons-films-tv": "🐰 Warner Bros. Toons — Films & TV"
+        "warner-bros-toons": "🐰 Warner Bros. Toons"
     }
 
     label2idx_display={}
