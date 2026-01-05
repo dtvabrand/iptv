@@ -1,5 +1,5 @@
 import os,re,io,sys,zipfile,gzip,requests,xml.etree.ElementTree as ET
-from urllib.parse import quote,unquote
+from urllib.parse import quote
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -53,24 +53,6 @@ def list_jobs(owner,repo,run_id):
     if not r or r.status_code!=200: return []
     return r.json().get("jobs") or []
 
-def find_job_and_step(owner,repo,run_id,prefer=("trakt","trakt lists","trakt_lists"),step_exact=("Run trakt","Run script"),step_prefix=("Run ",)):
-    jobs=list_jobs(owner,repo,run_id); job=None
-    for p in prefer:
-        job=next((j for j in jobs if p.lower() in (j.get("name") or "").lower()),None)
-        if job: break
-    if not job: job=jobs[0] if jobs else None
-    if not job: return None,None,None
-    steps=job.get("steps") or []; idx=None
-    for i,s in enumerate(steps,1):
-        nm=(s.get("name") or "").strip()
-        if nm in step_exact: idx=i; break
-    if not idx:
-        for i,s in enumerate(steps,1):
-            nm=(s.get("name") or "").strip()
-            if any(nm.startswith(p) for p in step_prefix): idx=i; break
-    if not idx: idx=1
-    return job.get("id"),idx,job
-
 def find_tv_job_and_step(owner,repo,run_id):
     jobs=list_jobs(owner,repo,run_id)
     job=next((j for j in jobs if "build epg" in (j.get("name","").lower())),None) or (jobs[0] if jobs else None)
@@ -121,61 +103,6 @@ def last_line_re_excluding(raw,pat,exclude_subs=()):
     for i,ln in enumerate(clean_lines(raw),1):
         if rg.search(ln) and not any(x in ln for x in exclude_subs): idx=i
     return idx
-
-def parse_titles(txt):
-    titles=[]
-    for raw in clean_lines(txt):
-        if "📝 QID for" in raw:
-            payload=raw.split("📝 QID for",1)[1].strip(); 
-            payload=payload[1:].strip() if payload.startswith(":") else payload
-            qs=re.findall(r'"([^"]+)"',payload)
-            if qs:
-                for t in qs:
-                    t=t.strip(); 
-                    if t and t not in titles: titles.append(t)
-            else:
-                if payload and payload not in titles: titles.append(payload)
-        elif raw.strip().startswith("🍿"):
-            t=raw.split("🍿",1)[1].strip(); 
-            if t and t not in titles: titles.append(t)
-    return titles
-
-def update_trakt(log_path,status="success"):
-    md=read(RD); txt=read(log_path,""); titles=parse_titles(txt); new_count=len(titles)
-    err=("🧩 Need new refresh token!" in txt); refreshed=("🔄 Trakt token refresh completed" in txt); valid=("🔐 Trakt token valid" in txt)
-    token_state="expired" if err else ("refreshed" if refreshed else ("valid" if valid else "unknown"))
-    token_color=COL["err"] if token_state=="expired" else (COL["ok"] if token_state=="refreshed" else (COL["token"] if token_state=="valid" else COL["date"]))
-    owner_repo=(os.getenv("GITHUB_REPOSITORY") or "").split("/",1); owner=owner_repo[0] if owner_repo else ""; repo=owner_repo[1] if len(owner_repo)==2 else ""; run_id=os.getenv("RUN_ID","").strip()
-    job_id=step_idx=ln_movies=ln_token=None; raw=""
-    if owner and repo and run_id:
-        job_id,step_idx,_=find_job_and_step(owner,repo,run_id)
-        raw=fetch_job_log(owner,repo,job_id) if job_id else ""
-        if raw:
-            gi=first_line(raw,["📝 QID for","🍿 "]); gs=nearest_group_start_before(raw,gi) if gi else None; ln_movies=(gi-gs+1) if (gi and gs) else None
-            t_needles=("🔄 Trakt token refresh completed",) if token_state=="refreshed" else (("🔐 Trakt token valid",) if token_state=="valid" else (("🧩 Need new refresh token!",) if token_state=="expired" else ()))
-            gt=first_line(raw,t_needles) if t_needles else None; st=nearest_group_start_before(raw,gt) if gt else None; ln_token=(gt-st+1) if (gt and st) else None
-            if ln_movies is not None and ln_movies<1: ln_movies=1
-            if ln_token is not None and ln_token<1: ln_token=1
-    nm=shield("New Movie",new_count,COL["warn"]); tk=shield("Token",token_state,token_color)
-    ts=ts_now_it(); evt=os.getenv("RUN_EVENT","").strip(); evt="cron" if evt=="schedule" else (evt or "event"); msg=f"{evt}, {ts}"
-    run_color=COL["ok"] if status=="success" else COL["err"]; runb=shield("Run",msg,run_color)
-    base=f"https://github.com/{owner}/{repo}/actions/runs/{run_id}" if (owner and repo and run_id) else ""
-    href_movies=(f"{base}/job/{job_id}#step:{step_idx}:{ln_movies}" if (base and job_id and step_idx and ln_movies) else base)
-    href_token=(f"{base}/job/{job_id}#step:{step_idx}:{ln_token}" if (base and job_id and step_idx and ln_token) else base)
-    href_run=(base or "")
-    dash=" ".join([enc_badge(nm,href_movies),enc_badge(tk,href_token),enc_badge(runb,href_run)])
-    md=repl_block(md,"DASH:TRAKT",dash)
-    line_movies="🍿 "+", ".join(titles) if titles else ""
-    latest=("#### ✨ _New movies!_\n"+line_movies) if line_movies else ""
-    md=repl_block(md,"TRAKT:OUTPUT",latest)
-    sent=f"<!-- TRAKT_RUN:{run_id} -->" if run_id else ""
-    prev=read_block(md,"TRAKT:HISTORY")
-    if run_id: prev=re.sub(r'(?ms)^.*?<!-- TRAKT_RUN:'+re.escape(run_id)+r' -->.*?(?:\n(?!\s*!\[).*)*','',prev).strip()
-    chunk=" ".join([enc_badge(nm,href_movies),enc_badge(tk,href_token),enc_badge(runb,href_run),sent]).strip()
-    if line_movies: chunk=chunk+("<br>\n"+line_movies)
-    parts=[x for x in (prev or "").split("\n\n") if x.strip()]
-    new_hist=(chunk+("\n\n"+("\n\n".join(parts[:29])) if parts else "")).strip()
-    md=repl_block(md,"TRAKT:HISTORY",new_hist); write(RD,md)
 
 def load_site_channels():
     base=os.path.dirname(os.path.abspath(__file__)); pretty={}; m_sites={}; d_sites={}
@@ -344,13 +271,11 @@ def update_tv(log_path,status="success"):
     md=repl_block(md,"TV:HISTORY",new_hist); write(RD,md)
 
 def main():
-    if len(sys.argv)<2: print("Usage:\n  dashboard.py trakt --log trakt_run.log [--status success|failure]\n  dashboard.py tv --log tv_epg.log [--status success|failure]"); sys.exit(1)
+    if len(sys.argv)<2:
+        print("Usage:\n  dashboard.py tv --log tv_epg.log [--status success|failure]")
+        sys.exit(1)
     mode=sys.argv[1].lower(); arg=lambda f,d=None: sys.argv[sys.argv.index(f)+1] if f in sys.argv else d
-    if mode=="trakt":
-        lp=arg("--log","trakt_run.log"); st=arg("--status","success");
-        try: update_trakt(lp,st)
-        except Exception as e: _dbg("fatal trakt",e)
-    elif mode=="tv":
+    if mode=="tv":
         lp=arg("--log","tv_epg.log"); st=arg("--status","success");
         try: update_tv(lp,st)
         except Exception as e: _dbg("fatal tv",e)
