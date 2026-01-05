@@ -1,4 +1,4 @@
-#EXTM3U url-tvg="https://dtvabrand.github.io/entertainment/m_epg.xml"
+#EXTM3U url-tvg="https://dtvabrand.github.io/iptv/m_epg.xml"
 
 #EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="http://odmsto.com/uploads/tv_image/sm/rai-1-prtwes3x26ld.png" tvg-name="Rai 1",Rai 1
 https://raiuno3-live.akamaized.net/hls/live/2017910/raiuno3/raiuno3/playlist.m3u8
@@ -23,7 +23,7 @@ https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
 https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8
 
 #EXTINF:-1 group-title="Variety" tvg-id="wabc" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/abc-us.png" tvg-name="WABC",ABC 7
-https://fl61.moveonjoy.com/ABC_EAST/index.m3u8
+http://origin.thetvapp.to/hls/WABCDT1/mono.m3u8
 
 #EXTINF:-1 group-title="Variety" tvg-id="wnbc" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nbc-logo-alt-us.png?raw=true" tvg-name="WNBC",NBC 4
 http://origin.thetvapp.to/hls/WNBCDT1/mono.m3u8
