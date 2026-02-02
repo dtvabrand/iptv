@@ -19,16 +19,16 @@ https://live02-seg.msf.cdn.mediaset.net/live/ch-c5/c5-clr.isml/index.m3u8
 https://live02-seg.msf.cdn.mediaset.net/live/ch-i1/i1-clr.isml/index.m3u8
 
 #EXTINF:-1 group-title="Cairo Communication" tvg-id="la7" tvg-logo="https://i.imgur.com/F90mpSa.png" tvg-name="LA7" ,LA7
-https://cloudflare-api.zappr.stream/api?https://viamotionhsi.netplus.ch/live/eds/la7/browser-dash/la7.mpd
+https://d1chghleocc9sm.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-evfku205gqrtf/Live.m3u8
 
 #EXTINF:-1 group-title="Sky Italia" tvg-id="tv8" tvg-logo="https://i.imgur.com/xvoHVOU.png" tvg-name="TV8",TV8
-https://www.mytivu.it/Application/Channels/TV8.php/index.m3u8
+https://hlslive-web-gcdn-skycdn-it.akamaized.net/TACT/11223/tv8web/master.m3u8?hdnts=st=1764666351~exp=1829466206~acl=/*~hmac=b0e9165b6c55027903ad103c8219f363d8765eb300c0d9a339e9767fc3509556
 
 #EXTINF:-1 group-title="Warner Bros. Discovery EMEA" tvg-id="nove" tvg-logo="https://i.imgur.com/Hp723RU.png" tvg-name="Nove",Nove
 https://d31mw7o1gs0dap.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-y5pbi2sq9r609/NOVE_IT.m3u8
 
 #EXTINF:-1 group-title="Sky Italia" tvg-id="skytg24" tvg-logo="https://i.imgur.com/q4d3Dah.png" tvg-name="SkyTG24",SkyTG24
-https://www.mytivu.it/Application/Channels/SkyTG24.php
+https://hlslive-web-gcdn-skycdn-it.akamaized.net/TACT/12221/web/master.m3u8?hdnts=st=1764666351~exp=1829466206~acl=/*~hmac=b0e9165b6c55027903ad103c8219f363d8765eb300c0d9a339e9767fc3509556
 
 #EXTINF:-1 group-title="Rai" tvg-id="rai-news-24" tvg-logo="https://i.imgur.com/gdzGwB6.png" tvg-name="Rai News 24",Rai News 24
 https://rainews2-live.akamaized.net/hls/live/598327/rainews2/rainews2/playlist.m3u8
@@ -46,7 +46,7 @@ https://proxy.media.convergenze.it/stiletv/streams/oQOFd7JglHjO1631525551097.m3u
 https://raistoria3-live.akamaized.net/hls/live/2018017/raistoria3/raistoria3/playlist.m3u8
 
 #EXTINF:-1 group-title="Rai" tvg-id="rai-scuola" tvg-logo="https://i.imgur.com/tmtJW6s.png" tvg-name="Rai Scuola",Rai Scuola
-https://cloudflare-api.zappr.stream/api?https://viamotionhsi.netplus.ch/live/eds/raiscuola/browser-dash/raiscuola.mpd
+https://raiscuola1-dash-live.akamaized.net/dash/live/663975/raiscuola1/manifest.mpd
 
 #EXTINF:-1 group-title="Rai" tvg-id="rai-sport" tvg-logo="https://i.imgur.com/xsGljsb.png" tvg-name="Rai Sport",Rai Sport
 https://raisportuno3-live.akamaized.net/hls/live/2018008/raisportuno3/raisportuno3/playlist.m3u8
@@ -85,7 +85,7 @@ https://live02-seg.msf.cdn.mediaset.net/live/ch-ts/ts-clr.isml/index.m3u8
 https://hls.live2.meride.tv/hls/live/2028947/pu934tjb/hls_1_3000/chunklist.m3u8
 
 #EXTINF:-1 group-title="Cairo Communication" tvg-id="la7-cinema" tvg-logo="https://i.imgur.com/AOL9nMw.png" tvg-name="LA7 Cinema",LA7 Cinema
-https://cloudflare-api.zappr.stream/api?https://viamotionhsi.netplus.ch/live/eds/la7d/browser-dash/la7d.mpd
+https://viamotionhsi.netplus.ch/live/eds/la7d/browser-dash/la7d.mpd
 
 #EXTINF:-1 group-title="Mediaset" tvg-id="la5" tvg-logo="https://i.imgur.com/UNyJaho.png" tvg-name="La5",La5
 https://live02-seg.msf.cdn.mediaset.net/live/ch-ka/ka-clr.isml/index.m3u8
