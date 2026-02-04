@@ -1,59 +1,23 @@
 #EXTM3U url-tvg="https://dtvabrand.github.io/iptv/m_epg.xml"
 
-#EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="http://odmsto.com/uploads/tv_image/sm/rai-1-prtwes3x26ld.png" tvg-name="Rai 1",Rai 1
+#EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/f/fa/Rai_1_-_Logo_2016.svg" tvg-name="Rai 1",Rai 1
 https://raiuno3-live.akamaized.net/hls/live/2017910/raiuno3/raiuno3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rai-2" tvg-logo="http://odmsto.com/uploads/tv_image/sm/rai-2-bobi5do2jjqa.png" tvg-name="Rai 2",Rai 2
+#EXTINF:-1 group-title="Italy" tvg-id="rai-2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/9/99/Rai_2_-_Logo_2016.svg" tvg-name="Rai 2",Rai 2
 https://raidue3-live.akamaized.net/hls/live/2017983/raidue3/raidue3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rai-3" tvg-logo="http://odmsto.com/uploads/tv_image/sm/rai-3-kwvj7ve82k1u.png" tvg-name="Rai 3",Rai 3
+#EXTINF:-1 group-title="Italy" tvg-id="rai-3" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/4/47/Rai_3_-_Logo_2016.svg" tvg-name="Rai 3",Rai 3
 https://raitre3-live.akamaized.net/hls/live/2018002/raitre3/raitre3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rete-4" tvg-logo="https://static2.mediasetplay.mediaset.it/mam/2021/02/11/144338957-20212311-a45d-4002-a783-e9cde2ded4c0@2.png" tvg-name="Rete 4",Rete 4
+#EXTINF:-1 group-title="Italy" tvg-id="rete-4" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/c/c0/Rete_4_-_Logo_2018.svg" tvg-name="Rete 4",Rete 4
 https://live02-seg.msf.cdn.mediaset.net/live/ch-r4/r4-clr.isml/index.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="canale-5" tvg-logo="https://static2.mediasetplay.mediaset.it/mam/2021/01/20/132645331-a3b3b56f-d240-4fcc-b4a0-2fd1f5b9124f@2.png" tvg-name="Canale 5",Canale 5
+#EXTINF:-1 group-title="Italy" tvg-id="canale-5" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/0/02/Canale_5_-_2018_logo.svg" tvg-name="Canale 5",Canale 5
 https://live02-seg.msf.cdn.mediaset.net/live/ch-c5/c5-clr.isml/index.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="italia-1" tvg-logo="https://static2.mediasetplay.mediaset.it/mam/2021/02/11/110049715-66fb66f3-bbf6-43fc-9c22-f0e3e01be65d@2.png" tvg-name="Italia 1",Italia 1
+#EXTINF:-1 group-title="Italy" tvg-id="italia-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/c/cc/Italia_1_logo.svg" tvg-name="Italia 1",Italia 1
 https://live02-seg.msf.cdn.mediaset.net/live/ch-i1/i1-clr.isml/index.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="tv2000" tvg-logo="https://i.imgur.com/x7RaK3a.png" tvg-name="TV 2000",TV 2000
+#EXTINF:-1 group-title="Italy" tvg-id="tv2000" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tv2000_-_Logo_2022.svg" tvg-name="TV 2000",TV 2000
 https://hls.live2.meride.tv/hls/live/2028947/pu934tjb/hls_1_3000/chunklist.m3u8
+#EXTINF:-1 group-title="Italy" tvg-id="focus" tvg-logo="https://upload.wikimedia.org/wikipedia/it/thumb/1/11/Focus_Logo.svg/1200px-Focus_Logo.svg.png" tvg-name="Focus",Focus
+https://live03-col.msf.cdn.mediaset.net/live/ch-fu/fu-clr.isml/manifest.mpd
 
-
-#EXTINF:-1 group-title="News" tvg-id="abc-news-live" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/512px-ABC_News_Live_logo_2021.svg.png" tvg-name="ABC News Live",ABC News Live
+#EXTINF:-1 group-title="News" tvg-id="abc-news-live" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/6/63/ABC_News_Live_logo_2021.svg" tvg-name="ABC News Live",ABC News Live
 https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
-
-#EXTINF:-1 group-title="News" tvg-id="livenowfromfox" tvg-logo="https://images.sr.roku.com/idType/roku-trc/context/trc/id/f9c0d48b540a55dcb98b04d2cc8abf25/https%3A%2F%2Fimage.roku.com%2Fbh-uploads%2Fproduction%2FinfoHUDLogo%2F1693442636429_1688568583363_177281_LiveNow-Monochromatic_Banner_Logo_260x147_001.png" tvg-name="LiveNOW from FOX",LiveNOW from FOX
+#EXTINF:-1 group-title="News" tvg-id="livenowfromfox" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/2/2d/LiveNOW_from_FOX.png" tvg-name="LiveNOW from FOX",LiveNOW from FOX
 https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8
-
-#EXTINF:-1 group-title="Variety" tvg-id="wabc" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/abc-us.png" tvg-name="WABC",ABC 7
-http://origin.thetvapp.to/hls/WABCDT1/mono.m3u8
-
-#EXTINF:-1 group-title="Variety" tvg-id="wnbc" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/nbc-logo-alt-us.png?raw=true" tvg-name="WNBC",NBC 4
-http://origin.thetvapp.to/hls/WNBCDT1/mono.m3u8
-
-#EXTINF:-1 group-title="Variety" tvg-id="wcbs" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/cbs-logo-white-us.png?raw=true" tvg-name="WCBS",CBS 2
-http://origin.thetvapp.to/hls/WCBSDT1/mono.m3u8
-
-#EXTINF:-1 group-title="Variety" tvg-id="wnyw" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/fox-us.png?raw=true" tvg-name="WNYW",FOX 5
-http://origin.thetvapp.to/hls/WNYWDT1/mono.m3u8
-
-#EXTINF:-1 group-title="Entertainment" tvg-id="bravo" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/bravo-us.png?raw=true" tvg-name="Bravo",Bravo
-http://fl1.moveonjoy.com/BRAVO/index.m3u8
-
-#EXTINF:-1 group-title="Entertainment" tvg-id="e-entertainment" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/e-entertainment-us.png?raw=true" tvg-name="E! Entertainment",E! Entertainment
-http://origin.thetvapp.to/hls/EEast/mono.m3u8
-
-#EXTINF:-1 group-title="Kids" tvg-id="boomerang" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/boomerang-us.png" tvg-name="Boomerang",Boomerang
-http://fl7.moveonjoy.com/BOOMERANG/index.m3u8
-
-#EXTINF:-1 group-title="Sport" tvg-id="espn" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/espn-icon-us.png?raw=true" tvg-name="ESPN",ESPN
-http://origin.thetvapp.to/hls/ESPN/mono.m3u8
-
-#EXTINF:-1 group-title="Sport" tvg-id="espn2" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/espn-2-us.png?raw=true" tvg-name="ESPN2",ESPN2
-http://fl2.moveonjoy.com/ESPN_2/index.m3u8
-
-#EXTINF:-1 group-title="Sport" tvg-id="espnu" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/espn-u-us.png?raw=true" tvg-name="ESPN U",ESPN U
-http://origin.thetvapp.to/hls/ESPNU/mono.m3u8
-
-#EXTINF:-1 group-title="Sport" tvg-id="acc-network" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/acc-network-us.png?raw=true" tvg-name="ACC Network",ACC Network
-http://origin.thetvapp.to/hls/ACCNetwork/mono.m3u8
-
-#EXTINF:-1 group-title="Sport" tvg-id="sec-network" tvg-logo="https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/espn-sec-us.png?raw=true" tvg-name="SEC Network",SEC Network
-http://fl1.moveonjoy.com/SEC_NETWORK/index.m3u8
