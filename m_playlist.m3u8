@@ -14,7 +14,7 @@ https://live02-seg.msf.cdn.mediaset.net/live/ch-c5/c5-clr.isml/index.m3u8
 https://live02-seg.msf.cdn.mediaset.net/live/ch-i1/i1-clr.isml/index.m3u8
 #EXTINF:-1 group-title="Italy" tvg-id="tv2000" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/1/1e/Tv2000_-_Logo_2022.svg" tvg-name="TV 2000",TV 2000
 https://hls.live2.meride.tv/hls/live/2028947/pu934tjb/hls_1_3000/chunklist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="focus" tvg-logo="https://upload.wikimedia.org/wikipedia/it/1/11/Focus_Logo.svg" tvg-name="Focus",Focus
+#EXTINF:-1 group-title="Italy" tvg-id="focus" tvg-logo="https://upload.wikimedia.org/wikipedia/it/thumb/1/11/Focus_Logo.svg/960px-Focus_Logo.svg.png" tvg-name="Focus",Focus
 https://live03-col.msf.cdn.mediaset.net/live/ch-fu/fu-clr.isml/manifest.mpd
 
 #EXTINF:-1 group-title="News" tvg-id="abc-news-live" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/6/63/ABC_News_Live_logo_2021.svg" tvg-name="ABC News Live",ABC News Live
