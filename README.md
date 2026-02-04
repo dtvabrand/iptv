@@ -4,7 +4,7 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
-[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%203%20feb%202026%2012%3A31%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077)
+[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%204%20feb%202026%2012%3A30%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
@@ -16,10 +16,10 @@
 </details></td><td align="center">1</td><td align="center">6</td><td align="center">9s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>mediasetinfinity.mediaset.it</summary>
 🔵 Cine34<br>🟡 Canale 5<br>🟡 Italia 1<br>🔵 TGCOM 24<br>🔵 Iris<br>🔵 Mediaset Extra<br>🔵 La5<br>🔵 20 Mediaset<br>🔵 Top Crime<br>🟡 Rete 4<br>🔵 27 Twentyseven
-</details></td><td align="center">3</td><td align="center">11</td><td align="center">10s</td><td align="center">✅</td></tr>
+</details></td><td align="center">3</td><td align="center">11</td><td align="center">9s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>pluto.tv</summary>
 🔴 LiveNOW from FOX<br>🔴 ABC News Live
-</details></td><td align="center">2</td><td align="center">0</td><td align="center">8s</td><td align="center">✅</td></tr>
+</details></td><td align="center">2</td><td align="center">0</td><td align="center">7s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>raiplay.it</summary>
 🟡 Rai 1<br>🟡 Rai 2<br>🟡 Rai 3<br>🔵 Rai 4<br>🔵 Rai 5<br>🔵 Rai Movie<br>🔵 Rai News 24<br>🔵 Rai Premium<br>🔵 Rai Scuola<br>🔵 Rai Sport<br>🔵 Rai Storia
 </details></td><td align="center">3</td><td align="center">11</td><td align="center">9s</td><td align="center">✅</td></tr>
@@ -36,6 +36,9 @@
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607/job/62474168994#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%204%20feb%202026%2012%3A30%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21669708607)<br>
+⚠️ No EPG<br>1 channel(s): Sportitalia
+
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077/job/62334692969#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%203%20feb%202026%2012%3A31%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21628482077)<br>
 ⚠️ No EPG<br>1 channel(s): Sportitalia
 
@@ -96,8 +99,6 @@
 
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20746611767/job/59565368401#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20746611767/job/59565368401#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-18s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20746611767/job/59565368401#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%206%20gen%202026%2012%3A15%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20746611767)<br>
 ⚠️ No EPG<br>1 channel(s): Sportitalia
-
-[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20713579821/job/59459475362#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20713579821/job/59459475362#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20713579821/job/59459475362#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%205%20gen%202026%2012%3A13%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/entertainment/actions/runs/20713579821)
 <!-- /TV:HISTORY -->
 </details>
 
