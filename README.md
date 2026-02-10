@@ -4,13 +4,13 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
-[![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:373) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:374) [![X](https://img.shields.io/badge/Build%20EPG-16s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%209%20feb%202026%2012%3A42%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149)
+[![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:373) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:374) [![X](https://img.shields.io/badge/Build%20EPG-17s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%2010%20feb%202026%2012%3A46%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
 <table><thead><tr><th>Site</th><th>M</th><th>D</th><th>Time</th><th>Status</th></tr></thead><tbody><tr><td><details><summary>guida.tv</summary>
 🔵 Nove<br>🔵 Real Time<br>🔵 Sportitalia
-</details></td><td align="center">0</td><td align="center">3</td><td align="center">7s</td><td align="center">✅</td></tr>
+</details></td><td align="center">0</td><td align="center">3</td><td align="center">6s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>guidatv.sky.it</summary>
 🔵 La7<br>🔵 La7 Cinema<br>🟡 TV2000<br>🔵 Cielo<br>🔵 TV8<br>🔵 SkyTG24
 </details></td><td align="center">1</td><td align="center">6</td><td align="center">7s</td><td align="center">✅</td></tr>
@@ -19,15 +19,17 @@
 </details></td><td align="center">4</td><td align="center">11</td><td align="center">8s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>pluto.tv</summary>
 🔴 LiveNOW from FOX<br>🔴 ABC News Live
-</details></td><td align="center">2</td><td align="center">0</td><td align="center">6s</td><td align="center">✅</td></tr>
+</details></td><td align="center">2</td><td align="center">0</td><td align="center">5s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>raiplay.it</summary>
 🟡 Rai 1<br>🟡 Rai 2<br>🟡 Rai 3<br>🔵 Rai 4<br>🔵 Rai 5<br>🔵 Rai Movie<br>🔵 Rai News 24<br>🔵 Rai Premium<br>🔵 Rai Scuola<br>🔵 Rai Sport<br>🔵 Rai Storia
-</details></td><td align="center">3</td><td align="center">11</td><td align="center">7s</td><td align="center">✅</td></tr></tbody></table>
+</details></td><td align="center">3</td><td align="center">11</td><td align="center">6s</td><td align="center">✅</td></tr></tbody></table>
 <!-- /TV:OUTPUT -->
 
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+[![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:373) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:374) [![X](https://img.shields.io/badge/Build%20EPG-17s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877/job/63098673356#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%2010%20feb%202026%2012%3A46%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21863547877)
+
 [![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:373) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:374) [![X](https://img.shields.io/badge/Build%20EPG-16s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149/job/62963023340#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%209%20feb%202026%2012%3A42%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21823644149)
 
 [![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21797259768/job/62886788397#step:5:373) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21797259768/job/62886788397#step:5:374) [![X](https://img.shields.io/badge/Build%20EPG-17s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21797259768/job/62886788397#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%208%20feb%202026%2012%3A19%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/21797259768)
@@ -87,8 +89,6 @@
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20954724096/job/60216416811#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20954724096/job/60216416811#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20954724096/job/60216416811#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%2013%20gen%202026%2012%3A17%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20954724096)
 
 [![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20917362386/job/60094102920#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20917362386/job/60094102920#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20917362386/job/60094102920#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%2012%20gen%202026%2012%3A16%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20917362386)
-
-[![X](https://img.shields.io/badge/M-21-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20894198788/job/60030069931#step:5:429) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20894198788/job/60030069931#step:5:430) [![X](https://img.shields.io/badge/Build%20EPG-16s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20894198788/job/60030069931#step:5:183) [![X](https://img.shields.io/badge/Run-cron%2C%2011%20gen%202026%2012%3A14%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/20894198788)
 <!-- /TV:HISTORY -->
 </details>
 
