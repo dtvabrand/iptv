@@ -1,23 +1,23 @@
 #EXTM3U url-tvg="https://dtvabrand.github.io/iptv/m_epg.xml"
 
-#EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Rai_1_-_Logo_2016.svg/512px-Rai_1_-_Logo_2016.svg.png" tvg-name="Rai 1",Rai 1
+#EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Rai_1_-_Logo_2016.svg/500px-Rai_1_-_Logo_2016.svg.png" tvg-name="Rai 1",Rai 1
 https://raiuno3-live.akamaized.net/hls/live/2017910/raiuno3/raiuno3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rai-2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Rai_2_-_Logo_2016.svg/512px-Rai_2_-_Logo_2016.svg.png" tvg-name="Rai 2",Rai 2
+#EXTINF:-1 group-title="Italy" tvg-id="rai-2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Rai_2_-_Logo_2016.svg/500px-Rai_2_-_Logo_2016.svg.png" tvg-name="Rai 2",Rai 2
 https://raidue3-live.akamaized.net/hls/live/2017983/raidue3/raidue3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rai-3" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Rai_3_-_Logo_2016.svg/512px-Rai_3_-_Logo_2016.svg.png" tvg-name="Rai 3",Rai 3
+#EXTINF:-1 group-title="Italy" tvg-id="rai-3" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Rai_3_-_Logo_2016.svg/500px-Rai_3_-_Logo_2016.svg.png" tvg-name="Rai 3",Rai 3
 https://raitre3-live.akamaized.net/hls/live/2018002/raitre3/raitre3/playlist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="rete-4" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Rete_4_-_Logo_2018.svg/512px-Rete_4_-_Logo_2018.svg.png" tvg-name="Rete 4",Rete 4
+#EXTINF:-1 group-title="Italy" tvg-id="rete-4" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Rete_4_-_Logo_2018.svg/500px-Rete_4_-_Logo_2018.svg.png" tvg-name="Rete 4",Rete 4
 https://live02-seg.msf.cdn.mediaset.net/live/ch-r4/r4-clr.isml/index.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="canale-5" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Canale_5_-_2018_logo.svg/512px-Canale_5_-_2018_logo.svg.png" tvg-name="Canale 5",Canale 5
+#EXTINF:-1 group-title="Italy" tvg-id="canale-5" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Canale_5_-_2018_logo.svg/500px-Canale_5_-_2018_logo.svg.png" tvg-name="Canale 5",Canale 5
 https://live02-seg.msf.cdn.mediaset.net/live/ch-c5/c5-clr.isml/index.m3u8
 #EXTINF:-1 group-title="Italy" tvg-id="italia-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Italia_1_logo.svg/500px-Italia_1_logo.svg.png" tvg-name="Italia 1",Italia 1
 https://live02-seg.msf.cdn.mediaset.net/live/ch-i1/i1-clr.isml/index.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="tv2000" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Tv2000_-_Logo_2022.svg/512px-Tv2000_-_Logo_2022.svg.png" tvg-name="TV 2000",TV 2000
+#EXTINF:-1 group-title="Italy" tvg-id="tv2000" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Tv2000_-_Logo_2022.svg/500px-Tv2000_-_Logo_2022.svg.png" tvg-name="TV 2000",TV 2000
 https://hls.live2.meride.tv/hls/live/2028947/pu934tjb/hls_1_3000/chunklist.m3u8
-#EXTINF:-1 group-title="Italy" tvg-id="focus" tvg-logo="https://upload.wikimedia.org/wikipedia/it/thumb/1/11/Focus_Logo.svg/512px-Focus_Logo.svg.png" tvg-name="Focus",Focus
+#EXTINF:-1 group-title="Italy" tvg-id="focus" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Focus_channel.png/500px-Focus_channel.png" tvg-name="Focus",Focus
 https://live03-col.msf.cdn.mediaset.net/live/ch-fu/fu-clr.isml/manifest.mpd
 
-#EXTINF:-1 group-title="News" tvg-id="abc-news-live" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/512px-ABC_News_Live_logo_2021.svg.png" tvg-name="ABC News Live",ABC News Live
+#EXTINF:-1 group-title="News" tvg-id="abc-news-live" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/500px-ABC_News_Live_logo_2021.svg.png" tvg-name="ABC News Live",ABC News Live
 https://aegis-cloudfront-1.tubi.video/d6cbb0de-68e4-4f3b-82f9-bf5d526e0bde/index.m3u8
-#EXTINF:-1 group-title="News" tvg-id="livenowfromfox" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/2/2d/LiveNOW_from_FOX.png" tvg-name="LiveNOW from FOX",LiveNOW from FOX
+#EXTINF:-1 group-title="News" tvg-id="livenowfromfox" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/LiveNOW_from_FOX.png/500px-LiveNOW_from_FOX.png" tvg-name="LiveNOW from FOX",LiveNOW from FOX
 https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8
