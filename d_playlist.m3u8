@@ -85,7 +85,7 @@ https://live02-seg.msf.cdn.mediaset.net/live/ch-ts/ts-clr.isml/index.m3u8
 https://hls.live2.meride.tv/hls/live/2028947/pu934tjb/hls_1_3000/chunklist.m3u8
 
 #EXTINF:-1 group-title="Cairo Communication" tvg-id="la7-cinema" tvg-logo="https://i.imgur.com/AOL9nMw.png" tvg-name="LA7 Cinema",LA7 Cinema
-https://viamotionhsi.netplus.ch/live/eds/la7d/browser-HLS8/la7d.m3u8
+https://d15umi5iaezxgx.cloudfront.net/LA7D/DRM/DASH/Live.mpd
 
 #EXTINF:-1 group-title="Mediaset" tvg-id="la5" tvg-logo="https://i.imgur.com/UNyJaho.png" tvg-name="La5",La5
 https://live02-seg.msf.cdn.mediaset.net/live/ch-ka/ka-clr.isml/index.m3u8
