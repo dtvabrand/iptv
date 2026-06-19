@@ -1,7 +1,7 @@
 #EXTM3U url-tvg="https://dtvabrand.github.io/iptv/m_epg.xml"
 
 #EXTINF:-1 group-title="Italy" tvg-id="rai-1" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Rai_1_-_Logo_2016.svg/500px-Rai_1_-_Logo_2016.svg.png" tvg-name="Rai 1",Rai 1
-https://dash2.antik.sk/live/test_rai_uno_tizen/playlist.m3u8
+https://raidue3-live.akamaized.net/hls/live/2017983/raidue3/raidue3/playlist.m3u8
 #EXTINF:-1 group-title="Italy" tvg-id="rai-2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Rai_2_-_Logo_2016.svg/500px-Rai_2_-_Logo_2016.svg.png" tvg-name="Rai 2",Rai 2
 https://raidue3-live.akamaized.net/hls/live/2017983/raidue3/raidue3/playlist.m3u8
 #EXTINF:-1 group-title="Italy" tvg-id="rai-3" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Rai_3_-_Logo_2016.svg/500px-Rai_3_-_Logo_2016.svg.png" tvg-name="Rai 3",Rai 3
