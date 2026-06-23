@@ -12,7 +12,8 @@
   <channel site="mediasetinfinity.mediaset.it"    lang="it" xmltv_id="Focus.it@SD" site_id="FU">Focus</channel> 
 
   <!-- ================== USA ================== -->
-  <channel site="pluto.tv"    lang="en" xmltv_id="abc-news-live"     site_id="6508be683a0d700008c534e4">ABC News Live</channel>
-  <channel site="pluto.tv"    lang="en" xmltv_id="livenowfromfox"    site_id="63d025db4e83e700086eaa96">LiveNOW from FOX</channel>
+  <channel site="pluto.tv"    lang="en" xmltv_id="abc-news-live"       site_id="6508be683a0d700008c534e4">ABC News Live</channel>
+  <channel site="pluto.tv"    lang="en" xmltv_id="livenowfromfox"      site_id="63d025db4e83e700086eaa96">LiveNOW from FOX</channel>
+  <channel site="pluto.tv"    lang="en" xmltv_id="bloomberg"           site_id="54ff7ba69222cb1c2624c584">Bloomberg</channel>  
 
 </channels>
