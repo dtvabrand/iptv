@@ -4,7 +4,7 @@
 
 ### 📺 Live TV
 <!-- DASH:TV -->
-[![X](https://img.shields.io/badge/M-11-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%201%20lug%202026%203%3A32%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842)
+[![X](https://img.shields.io/badge/M-11-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-20s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%202%20lug%202026%202%3A57%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828)
 <!-- /DASH:TV -->
 
 <!-- TV:OUTPUT -->
@@ -16,7 +16,7 @@
 </details></td><td align="center">1</td><td align="center">6</td><td align="center">9s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>mediasetinfinity.mediaset.it</summary>
 🔵 Cine34<br>🟡 Canale 5<br>🔴 Focus<br>🟡 Italia 1<br>🔵 TGCOM 24<br>🔵 Iris<br>🔵 Mediaset Extra<br>🔵 La5<br>🔵 20 Mediaset<br>🔵 Top Crime<br>🟡 Rete 4<br>🔵 27 Twentyseven
-</details></td><td align="center">4</td><td align="center">11</td><td align="center">10s</td><td align="center">✅</td></tr>
+</details></td><td align="center">4</td><td align="center">11</td><td align="center">11s</td><td align="center">✅</td></tr>
 <tr><td><details><summary>pluto.tv</summary>
 🔴 Bloomberg<br>🔴 LiveNOW from FOX<br>🔴 ABC News Live
 </details></td><td align="center">3</td><td align="center">0</td><td align="center">8s</td><td align="center">✅</td></tr>
@@ -28,6 +28,8 @@
 <details><summary>Previous days</summary>
 
 <!-- TV:HISTORY -->
+[![X](https://img.shields.io/badge/M-11-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-20s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828/job/84776084513#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%202%20lug%202026%202%3A57%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28591537828)
+
 [![X](https://img.shields.io/badge/M-11-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842/job/84545917955#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%201%20lug%202026%203%3A32%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28521307842)
 
 [![X](https://img.shields.io/badge/M-11-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28446612092/job/84297520102#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28446612092/job/84297520102#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-17s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28446612092/job/84297520102#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%2030%20giu%202026%203%3A09%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/28446612092)
@@ -85,8 +87,6 @@
 [![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26956245279/job/79534125958#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26956245279/job/79534125958#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-20s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26956245279/job/79534125958#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%204%20giu%202026%203%3A56%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26956245279)
 
 [![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26894813431/job/79330674062#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26894813431/job/79330674062#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-20s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26894813431/job/79330674062#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%203%20giu%202026%205%3A26%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26894813431)
-
-[![X](https://img.shields.io/badge/M-10-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26827554359/job/79099263764#step:5:204) [![X](https://img.shields.io/badge/D-31-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26827554359/job/79099263764#step:5:205) [![X](https://img.shields.io/badge/Build%20EPG-19s-f1d70f?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26827554359/job/79099263764#step:5:181) [![X](https://img.shields.io/badge/Run-cron%2C%202%20giu%202026%204%3A48%20pm-2cc36b?cacheSeconds=300)](https://github.com/dtvabrand/iptv/actions/runs/26827554359)
 <!-- /TV:HISTORY -->
 </details>
 
